@@ -16,7 +16,7 @@ const options = {
             {
                 url: process.env.NODE_ENV === 'production'
                     ? 'https://vizima-backend.onrender.com'
-                    : 'http://localhost:5000/api',
+                    : 'http://localhost:5000',
                 description: process.env.NODE_ENV === 'production' ? 'Production server' : 'Development server'
             }
         ],

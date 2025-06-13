@@ -165,8 +165,8 @@ router.post('/register', [
         .withMessage('Please provide a valid phone number'),
     body('role')
         .optional()
-        .isIn(['user', 'owner'])
-        .withMessage('Role must be either user or owner')
+        .isIn(['user', 'admin'])
+        .withMessage('Role must be either user or admin')
 ], register);
 
 /**
