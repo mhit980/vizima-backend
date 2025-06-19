@@ -1,4 +1,5 @@
 const { body, param, query, validationResult } = require('express-validator');
+// const sanitizeHtml = require('sanitize-html');
 
 // Helper function to handle validation results
 const handleValidationErrors = (req, res, next) => {
@@ -466,6 +467,224 @@ const validateContact = [
     handleValidationErrors
 ];
 
+//========================================================================= Home =============================================================
+
+
+const sanitizeInput = (value) => {
+    if (typeof value !== 'string') return value;
+    return sanitizeHtml(value, {
+        allowedTags: [],
+        allowedAttributes: {},
+        disallowedTagsMode: 'discard'
+    }).trim();
+};
+
+const isValidDateFormat = (dateString) => {
+    const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+    if (!dateRegex.test(dateString)) return false;
+
+    const [day, month, year] = dateString.split('/').map(Number);
+    const date = new Date(year, month - 1, day);
+
+    // Check if the date is valid and not in the past
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return date.getDate() === day &&
+        date.getMonth() === month - 1 &&
+        date.getFullYear() === year &&
+        date >= today;
+};
+
+const validTimeSlots = [
+    "09:00-09:30", "09:30-10:00", "10:00-10:30", "10:30-11:00",
+    "11:00-11:30", "11:30-12:00", "12:00-12:30", "12:30-13:00",
+    "13:00-13:30", "13:30-14:00", "14:00-14:30", "14:30-15:00",
+    "15:00-15:30", "15:30-16:00", "16:00-16:30", "16:30-17:00",
+    "17:00-17:30"
+];
+
+const validatePgHostelSearch = [
+    query('search')
+        .optional()
+        .isLength({ max: 100 })
+        .withMessage('Search text must not exceed 100 characters')
+        .customSanitizer(sanitizeInput),
+
+    query('gender')
+        .optional()
+        .isIn(['Male', 'Female', 'Unisex'])
+        .withMessage('Gender must be Male, Female, or Unisex'),
+
+    query('page')
+        .optional()
+        .isInt({ min: 1 })
+        .withMessage('Page must be a positive integer')
+        .toInt(),
+
+    query('limit')
+        .optional()
+        .isInt({ min: 1, max: 50 })
+        .withMessage('Limit must be between 1 and 50')
+        .toInt(),
+
+    query('sortBy')
+        .optional()
+        .isIn(['name', 'rent', 'rating', 'createdAt'])
+        .withMessage('Sort by must be name, rent, rating, or createdAt'),
+
+    query('sortOrder')
+        .optional()
+        .isIn(['asc', 'desc'])
+        .withMessage('Sort order must be asc or desc'),
+
+    query('minRent')
+        .optional()
+        .isFloat({ min: 0 })
+        .withMessage('Minimum rent must be a positive number')
+        .toFloat(),
+
+    query('maxRent')
+        .optional()
+        .isFloat({ min: 0 })
+        .withMessage('Maximum rent must be a positive number')
+        .toFloat(),
+
+    query('type')
+        .optional()
+        .isIn(['pg', 'hostel'])
+        .withMessage('Type must be pg or hostel'),
+
+    query('city')
+        .optional()
+        .isLength({ min: 2, max: 50 })
+        .withMessage('City name must be between 2 and 50 characters')
+        .customSanitizer(sanitizeInput),
+
+    // Custom validation to ensure minRent <= maxRent
+    query('maxRent').custom((value, { req }) => {
+        const minRent = req.query.minRent;
+        if (minRent && value && parseFloat(minRent) > parseFloat(value)) {
+            throw new Error('Maximum rent must be greater than or equal to minimum rent');
+        }
+        return true;
+    }),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                message: 'Validation failed',
+                errors: errors.array()
+            });
+        }
+
+        // Set default values
+        req.query.page = req.query.page || 1;
+        req.query.limit = req.query.limit || 10;
+        req.query.sortBy = req.query.sortBy || 'createdAt';
+        req.query.sortOrder = req.query.sortOrder || 'desc';
+
+        next();
+    }
+];
+
+const validateFeaturedSearch = [
+    query('city')
+        .notEmpty()
+        .withMessage('City is required')
+        .isLength({ min: 2, max: 50 })
+        .withMessage('City name must be between 2 and 50 characters')
+        .customSanitizer(sanitizeInput)
+        .matches(/^[a-zA-Z\s\-'\.]+$/)
+        .withMessage('City name can only contain letters, spaces, hyphens, apostrophes, and dots'),
+
+    query('limit')
+        .optional()
+        .isInt({ min: 1, max: 20 })
+        .withMessage('Limit must be between 1 and 20')
+        .toInt(),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                message: 'Validation failed',
+                errors: errors.array()
+            });
+        }
+
+        // Set default limit
+        req.query.limit = req.query.limit || 6;
+
+        // Capitalize city name properly
+        req.query.city = req.query.city
+            .toLowerCase()
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+
+        next();
+    }
+];
+
+// const validateBooking = [
+//     body('propertyId')
+//         .notEmpty()
+//         .withMessage('Property ID is required')
+//         .isMongoId()
+//         .withMessage('Invalid property ID format'),
+
+//     body('date')
+//         .notEmpty()
+//         .withMessage('Date is required')
+//         .matches(/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/)
+//         .withMessage('Date must be in DD/MM/YYYY format')
+//         .custom((value) => {
+//             if (!isValidDateFormat(value)) {
+//                 throw new Error('Invalid date or date cannot be in the past');
+//             }
+//             return true;
+//         }),
+
+//     body('timeSlot')
+//         .notEmpty()
+//         .withMessage('Time slot is required')
+//         .isIn(validTimeSlots)
+//         .withMessage('Invalid time slot. Must be between 09:00-17:30 in 30-minute intervals'),
+
+//     body('visitType')
+//         .notEmpty()
+//         .withMessage('Visit type is required')
+//         .isIn(['virtual', 'physical'])
+//         .withMessage('Visit type must be virtual or physical'),
+
+//     body('description')
+//         .optional()
+//         .isLength({ max: 500 })
+//         .withMessage('Description must not exceed 500 characters')
+//         .customSanitizer(sanitizeInput),
+
+//     (req, res, next) => {
+//         const errors = validationResult(req);
+//         if (!errors.isEmpty()) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: 'Validation failed',
+//                 errors: errors.array()
+//             });
+//         }
+
+//         // Convert date from DD/MM/YYYY to Date object
+//         const [day, month, year] = req.body.date.split('/').map(Number);
+//         req.body.dateObject = new Date(year, month - 1, day);
+
+//         next();
+//     }
+// ];
+
 module.exports = {
     // Auth validations
     validateRegister,
@@ -501,5 +720,13 @@ module.exports = {
     validateContact,
 
     // Helper function
-    handleValidationErrors
+    handleValidationErrors,
+
+    isValidDateFormat,
+    
+    validateFeaturedSearch,
+
+    validatePgHostelSearch,
+
+    validTimeSlots
 };

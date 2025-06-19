@@ -16,8 +16,16 @@ const propertySchema = new mongoose.Schema({
         type: String,
         required: [true, 'Property type is required'],
         enum: {
-            values: ['apartment', 'house', 'room', 'studio', 'villa', 'penthouse'],
+            values: ['apartment', 'house', 'room', 'studio', 'villa', 'penthouse', 'pg', 'hostel'],
             message: 'Please select a valid property type'
+        }
+    },
+    gender: {
+        type: String,
+        required: [true, 'gender is required'],
+        enum: {
+            values: ['male', 'female', 'unisex'],
+            message: 'Please select a valid gender'
         }
     },
     price: {

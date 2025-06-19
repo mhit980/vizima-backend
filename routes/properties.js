@@ -839,8 +839,12 @@ router.get('/:id/similar', param('id').isMongoId().withMessage('Invalid property
  *                 example: "Beautiful fully furnished apartment with modern amenities"
  *               type:
  *                 type: string
- *                 enum: [apartment, house, room, studio, villa, penthouse]
+ *                 enum: [apartment, house, room, studio, villa, penthouse, pg, hostel]
  *                 example: "apartment"
+ *               gender:
+ *                 type: string
+ *                 enum: [male, female, unisex]
+ *                 example: "male"
  *               price:
  *                 type: number
  *                 minimum: 0
@@ -1024,8 +1028,12 @@ router.post('/', protect, authorize('admin'), createPropertyValidation, createPr
  *                 example: "Updated beautiful fully furnished apartment"
  *               type:
  *                 type: string
- *                 enum: [apartment, house, room, studio, villa, penthouse]
+ *                 enum: [apartment, house, room, studio, villa, penthouse, pg, hostel]
  *                 example: "apartment"
+ *               gender:
+ *                 type: string
+ *                 enum: [male, female, unisex]
+ *                 example: "male"
  *               price:
  *                 type: number
  *                 minimum: 0
