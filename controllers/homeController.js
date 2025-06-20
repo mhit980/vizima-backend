@@ -1,7 +1,7 @@
 
 const Property = require('../models/Property');
-const Booking = require('../models/Booking');
 const { validationResult } = require('express-validator');
+const VisitBooking = require('../models/VisitBooking');
 
 /**
  * @desc    Get all PG and Hostel listings with search and filters
@@ -79,6 +79,129 @@ const getAllPgHostel = async (req, res) => {
 };
 
 
+
+const bookVisit = async (req, res) => {
+    try {
+        // Validate request body
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                message: 'Validation failed',
+                errors: errors.array()
+            });
+        }
+
+        const { date, timeSlot, mode, description, propertyId } = req.body;
+
+        // Check if property exists
+        const property = await Property.findById(propertyId);
+        if (!property) {
+            return res.status(404).json({
+                success: false,
+                message: 'Property not found'
+            });
+        }
+
+        // Create booking
+        const booking = new VisitBooking({
+            propertyId,
+            userId: req.user.id, // Assumes user is authenticated and ID is attached
+            date,
+            timeSlot,
+            mode,
+            description
+        });
+
+        await booking.save();
+
+        // Optionally, push the booking to user's and property's arrays
+        // await User.findByIdAndUpdate(req.user.id, { $push: { visitBookings: booking._id } });
+        // await Property.findByIdAndUpdate(propertyId, { $push: { visitBookings: booking._id } });
+
+        return res.status(201).json({
+            success: true,
+            message: 'Visit booking created successfully',
+            data: booking
+        });
+
+    } catch (error) {
+        console.error('Booking error:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Internal server error'
+        });
+    }
+};
+
+const getAllVisitBookings = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        const skip = (page - 1) * limit;
+
+        const [bookings, total] = await Promise.all([
+            VisitBooking.find()
+                .populate('userId', 'name email')
+                .skip(skip)
+                .limit(limit)
+                .sort({ createdAt: -1 }),
+            VisitBooking.countDocuments()
+        ]);
+
+        const pages = Math.ceil(total / limit);
+
+        return res.status(200).json({
+            success: true,
+            count: bookings.length,
+            pagination: {
+                page,
+                limit,
+                total,
+                pages
+            },
+            data: bookings
+        });
+    } catch (error) {
+        console.error('Error fetching visit bookings:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error'
+        });
+    }
+}
+
+const getVisitBookingById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const booking = await VisitBooking.findById(id).populate('userId', 'name email');
+
+        if (!booking) {
+            return res.status(404).json({
+                success: false,
+                message: 'Visit booking not found'
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: booking
+        });
+    } catch (error) {
+        console.error('Error fetching visit booking:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error'
+        });
+    }
+  };
+
+
 module.exports = {
     getAllPgHostel,
+    bookVisit,
+    getAllVisitBookings,
+    getVisitBookingById,
 };

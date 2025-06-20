@@ -468,7 +468,7 @@ const updatePropertyValidation = [
  *         name: type
  *         schema:
  *           type: string
- *           enum: [apartment, house, room, studio, villa, penthouse]
+ *           enum: [apartment, house, room, studio, villa, penthouse, pg, hostel]
  *         description: Filter by property type
  *       - in: query
  *         name: minPrice

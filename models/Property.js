@@ -28,6 +28,11 @@ const propertySchema = new mongoose.Schema({
             message: 'Please select a valid gender'
         }
     },
+    bulkAccommodationFor: [{
+        type: String,
+        required: [false, 'Property type is required'],
+        enum: ['interns', 'employees', 'students']
+    }],
     price: {
         type: Number,
         required: [true, 'Property price is required'],
@@ -121,6 +126,10 @@ const propertySchema = new mongoose.Schema({
             type: String,
             enum: ['hospital', 'school', 'mall', 'restaurant', 'transport', 'other']
         }
+    }],
+    visitBookings: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'VisitBooking'
     }]
 }, {
     timestamps: true

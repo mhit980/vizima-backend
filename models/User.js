@@ -49,7 +49,11 @@ const userSchema = new mongoose.Schema({
             max: { type: Number, default: 100000 }
         },
         propertyType: [String]
-    }
+    },
+    visitBookings: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'VisitBooking'
+    }]
 }, {
     timestamps: true
 });
