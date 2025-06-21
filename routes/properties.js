@@ -376,7 +376,22 @@ const createPropertyValidation = [
     body('nearbyPlaces.*.type')
         .optional()
         .isIn(['hospital', 'school', 'mall', 'restaurant', 'transport', 'other'])
-        .withMessage('Invalid nearby place type')
+        .withMessage('Invalid nearby place type'),
+    body('bulkAccommodation')
+        .optional()
+        .isBoolean()
+        .withMessage('bulkAccommodation must be a boolean'),
+
+    body('bulkAccommodationType')
+        .optional()
+        .isArray()
+        .withMessage('bulkAccommodationType must be an array'),
+
+    body('bulkAccommodationType.*')
+        .optional()
+        .isIn(['interns', 'employees', 'students'])
+        .withMessage('Invalid bulkAccommodationType value')
+    
 ];
 
 const updatePropertyValidation = [
@@ -470,6 +485,12 @@ const updatePropertyValidation = [
  *           type: string
  *           enum: [apartment, house, room, studio, villa, penthouse, pg, hostel]
  *         description: Filter by property type
+ *       - in: query
+ *         name: sharingType
+ *         schema:
+ *           type: [string]
+ *           enum: [single, double, triple]
+ *         description: Filter by sharing type
  *       - in: query
  *         name: minPrice
  *         schema:
@@ -845,6 +866,23 @@ router.get('/:id/similar', param('id').isMongoId().withMessage('Invalid property
  *                 type: string
  *                 enum: [male, female, unisex]
  *                 example: "male"
+ *               bulkAccommodation:
+ *                 type: boolean
+ *                 example: false
+ *                 default: false
+ *                 required: false
+ *               bulkAccomodationType:
+ *                 type: [string]
+ *                 enum: [interns, employees, students ]
+ *                 example: ["interns", "employees", "students"]
+ *                 required: false
+ *                 default: []
+ *               sharingType:
+ *                 type: [string]
+ *                 enum: [single, double, triple]
+ *                 example: ["single", "double", "triple"]
+ *                 required: false
+ *                 default: []
  *               price:
  *                 type: number
  *                 minimum: 0
@@ -1034,6 +1072,23 @@ router.post('/', protect, authorize('admin'), createPropertyValidation, createPr
  *                 type: string
  *                 enum: [male, female, unisex]
  *                 example: "male"
+ *               bulkAccommodation:
+ *                 type: boolean
+ *                 example: false
+ *                 default: false
+ *                 required: false
+ *               bulkAccomodationType:
+ *                 type: [string]
+ *                 enum: [interns, employees, students ]
+ *                 example: "interns"
+ *                 required: false
+ *                 default: []
+ *               sharingType:
+ *                 type: [string]
+ *                 enum: [single, double, triple]
+ *                 example: ["single", "double", "triple"]
+ *                 required: false
+ *                 default: []
  *               price:
  *                 type: number
  *                 minimum: 0

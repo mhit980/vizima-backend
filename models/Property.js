@@ -28,11 +28,24 @@ const propertySchema = new mongoose.Schema({
             message: 'Please select a valid gender'
         }
     },
-    bulkAccommodationFor: [{
-        type: String,
-        required: [false, 'Property type is required'],
-        enum: ['interns', 'employees', 'students']
-    }],
+    bulkAccommodation: {
+        type: Boolean,
+        default: false
+    },
+    bulkAccommodationType: {
+        type: [String],
+        enum: {
+            values: ['interns', 'employees', 'students'],
+            message: 'Invalid bulk accommodation type'
+        },
+        default: []
+    },
+    sharingType: {
+        type: [String],
+        enum: ['single', 'double', 'triple'],
+        required: false,
+        default: []
+    },
     price: {
         type: Number,
         required: [true, 'Property price is required'],

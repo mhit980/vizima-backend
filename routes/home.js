@@ -5,6 +5,7 @@ const {
     bookVisit,
     getAllVisitBookings,
     getVisitBookingById,
+    getBulkAccommodationProperties,
 } = require('../controllers/homeController');
 const { protect, authorize } = require('../middleware/auth')
 
@@ -457,5 +458,64 @@ router.get('/visit-bookings', protect, authorize('admin'), getAllVisitBookings);
  *         description: Server error
  */
 router.get('/visit-bookings/:id', getVisitBookingById);
+
+/**
+ * @swagger
+ * /api/home/bulk-accommodation:
+ *   get:
+ *     summary: Get all properties offering bulk accommodation
+ *     tags: [Home]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number for pagination
+ *         example: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
+ *         description: Number of properties per page
+ *         example: 10
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *           enum: [interns, employees, students]
+ *         description: Filter by bulk accommodation type
+ *         example: interns
+ *     responses:
+ *       200:
+ *         description: Bulk accommodation properties retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BulkAccommodationResponse'
+ *       400:
+ *         description: Invalid filter value
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               success: false
+ *               message: "Invalid bulk accommodation type"
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               success: false
+ *               message: "Server error"
+ */
+router.get('/bulk-accommodation', getBulkAccommodationProperties);
 
 module.exports = router;

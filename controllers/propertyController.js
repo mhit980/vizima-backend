@@ -20,6 +20,7 @@ const getProperties = async (req, res) => {
             bathrooms,
             amenities,
             search,
+            sharingType,
             sortBy = 'createdAt',
             sortOrder = 'desc',
             isAvailable = true,
@@ -34,6 +35,9 @@ const getProperties = async (req, res) => {
         if (city) query['location.city'] = new RegExp(city, 'i');
         if (state) query['location.state'] = new RegExp(state, 'i');
         if (type) query.type = type;
+        if (sharingType) {
+            query.sharingType = { $in: sharingType };
+        }
         if (bedrooms) query.bedrooms = parseInt(bedrooms);
         if (bathrooms) query.bathrooms = parseInt(bathrooms);
 

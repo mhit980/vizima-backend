@@ -198,10 +198,64 @@ const getVisitBookingById = async (req, res) => {
     }
   };
 
+const getBulkAccommodationProperties = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const type = req.query.type;
+
+        const skip = (page - 1) * limit;
+
+        const allowedTypes = ['interns', 'employees', 'students'];
+
+        if (type && !allowedTypes.includes(type)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid bulk accommodation type'
+            });
+        }
+
+        const query = {
+            bulkAccommodation: true,
+            ...(type && { bulkAccommodationType: type })
+        };
+
+        const [properties, total] = await Promise.all([
+            Property.find(query)
+                .skip(skip)
+                .limit(limit)
+                .sort({ createdAt: -1 }),
+            Property.countDocuments(query)
+        ]);
+
+        const pages = Math.ceil(total / limit);
+
+        return res.status(200).json({
+            success: true,
+            count: properties.length,
+            pagination: {
+                page,
+                limit,
+                total,
+                pages
+            },
+            data: properties
+        });
+    } catch (error) {
+        console.error('Error fetching bulk accommodation properties:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error'
+        });
+    }
+};
+
+
 
 module.exports = {
     getAllPgHostel,
     bookVisit,
     getAllVisitBookings,
     getVisitBookingById,
+    getBulkAccommodationProperties, 
 };
