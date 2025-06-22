@@ -16,6 +16,7 @@ const userRoutes = require("./routes/users");
 const spamRoutes = require("./routes/spam");
 const homeRoutes = require("./routes/home");
 const contactRoutes = require("./routes/contact");
+const scheduleVisitRoutes = require("./routes/scheduleVisit");
 
 const app = express();
 
@@ -55,6 +56,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/spam/", spamRoutes);
 app.use("/api/home", homeRoutes);
 app.use("/api/contact", contactRoutes);
+app.use("/api/schedule", scheduleVisitRoutes);
 
 // Health check endpoint
 app.get("/health", (req, res) => {

@@ -303,7 +303,7 @@ const createPropertyValidation = [
         .isLength({ min: 1, max: 1000 })
         .withMessage('Description must be between 1 and 1000 characters'),
     body('type')
-        .isIn(['apartment', 'house', 'room', 'studio', 'villa', 'penthouse'])
+        .isIn(['apartment', 'house', 'room', 'studio', 'villa', 'penthouse', 'pg', 'hostel'])
         .withMessage('Please select a valid property type'),
     body('price')
         .isFloat({ min: 0 })
@@ -407,7 +407,7 @@ const updatePropertyValidation = [
         .withMessage('Description must be between 1 and 1000 characters'),
     body('type')
         .optional()
-        .isIn(['apartment', 'house', 'room', 'studio', 'villa', 'penthouse'])
+        .isIn(['apartment', 'house', 'room', 'studio', 'villa', 'penthouse', 'pg', 'hostel'])
         .withMessage('Please select a valid property type'),
     body('price')
         .optional()

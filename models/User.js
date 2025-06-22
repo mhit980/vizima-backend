@@ -50,10 +50,6 @@ const userSchema = new mongoose.Schema({
         },
         propertyType: [String]
     },
-    visitBookings: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'VisitBooking'
-    }]
 }, {
     timestamps: true
 });
