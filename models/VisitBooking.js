@@ -1,11 +1,9 @@
 const mongoose = require('mongoose');
 
 const visitBookingSchema = new mongoose.Schema({
-    
     date: {
         type: Date,
         required: true,
-        default: Date.now
     },
     timeSlot: {
         type: String,
@@ -40,54 +38,19 @@ const visitBookingSchema = new mongoose.Schema({
         type: String,
         maxlength: 1000
     },
-    propertyId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Property',
+    status: {
+        type: String,
+        enum: ['pending', 'confirmed', 'cancelled', 'completed'],
+        default: 'pending'
+    },
+    name: {
+        type: String,
         required: true
     },
-    gender: {
+    phone: {
         type: String,
-        enum: ['male', 'female', 'unisex']
-    },
-    sharing: {
-        type: String,
-        enum: ['single', 'double', 'triple']
-    },
-    propertyName: {
-        type: String
-    },
-    fullName: {
-        type: String,
-        trim: true,
-        maxlength: 100
-    },
-    phoneNumber: {
-        type: String,
-        trim: true,
-        validate: {
-            validator: function (v) {
-                // Basic phone number validation (adjust regex as needed)
-                return /^[0-9]{10,15}$/.test(v);
-            },
-            message: props => `${props.value} is not a valid phone number!`
-        }
-    },
-    email: {
-        type: String,
-        trim: true,
-        lowercase: true,
-        validate: {
-            validator: function (v) {
-                // Basic email validation
-                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-            },
-            message: props => `${props.value} is not a valid email!`
-        }
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
+        required: true
     }
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model('VisitBooking', visitBookingSchema);

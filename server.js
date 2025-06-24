@@ -16,6 +16,9 @@ const userRoutes = require("./routes/users");
 const spamRoutes = require("./routes/spam");
 const homeRoutes = require("./routes/home");
 const contactRoutes = require("./routes/contact");
+const faqRoutes = require("./routes/faq");
+const testimonialRoutes = require("./routes/testimonial");
+const visitBookingRoutes = require("./routes/visitBooking");
 const scheduleVisitRoutes = require("./routes/scheduleVisit");
 
 const app = express();
@@ -31,7 +34,6 @@ app.use(
         credentials: true,
     })
 );
-
 
 // Rate limiting
 const limiter = rateLimit({
@@ -58,6 +60,11 @@ app.use("/api/spam/", spamRoutes);
 app.use("/api/home", homeRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/schedule", scheduleVisitRoutes);
+app.use("/api/faqs", faqRoutes);
+app.use("/api/testimonials", testimonialRoutes);
+app.use("/api/visit-bookings", visitBookingRoutes);
+app.use("/api/schedule-visits", scheduleVisitRoutes);
+
 
 // Health check endpoint
 app.get("/health", (req, res) => {

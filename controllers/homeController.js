@@ -250,25 +250,7 @@ const getBulkAccommodationProperties = async (req, res) => {
     }
 };
 
-const scheduleVisit = async (req, res) => {
-    try {
-        const booking = new VisitBooking(req.body);
-        await booking.save();
 
-        res.status(201).json({
-            success: true,
-            message: 'Visit booking created successfully',
-            data: booking
-        });
-    } catch (error) {
-        console.error('Error creating visit booking:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Internal server error',
-            error: error.message
-        });
-    }
-};
 
 
 
@@ -278,5 +260,4 @@ module.exports = {
     getAllVisitBookings,
     getVisitBookingById,
     getBulkAccommodationProperties,
-    scheduleVisit,
 };

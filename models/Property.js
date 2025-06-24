@@ -143,6 +143,10 @@ const propertySchema = new mongoose.Schema({
     visitBookings: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'VisitBooking'
+    }],
+    scheduleVisits: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ScheduleVisit'
     }]
 }, {
     timestamps: true

@@ -13,9 +13,16 @@ const createBooking = async (req, res) => {
             checkIn,
             checkOut,
             guests,
+            totalAmount,
             specialRequests,
             contactInfo,
-            paymentMethod
+            paymentMethod,
+            fullName,
+            phoneNumber,
+            email,
+            gender,
+            sharing,
+            scheduleDate
         } = req.body;
 
         // Validate property exists
@@ -27,8 +34,10 @@ const createBooking = async (req, res) => {
             });
         }
 
+        console.log('Property exists:', propertyExists);
+
         // Check if property is active
-        if (!propertyExists.isActive) {
+        if (!propertyExists.isAvailable) {
             return res.status(400).json({
                 success: false,
                 message: 'Property is not available for booking'
@@ -59,6 +68,13 @@ const createBooking = async (req, res) => {
             checkIn: new Date(checkIn),
             checkOut: new Date(checkOut),
             guests,
+            totalAmount,
+            fullName,
+            phoneNumber,
+            email,
+            gender,
+            sharing,
+            scheduleDate: new Date(scheduleDate),
             specialRequests,
             contactInfo,
             paymentMethod: paymentMethod || 'credit_card'

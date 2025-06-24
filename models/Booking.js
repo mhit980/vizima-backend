@@ -11,6 +11,38 @@ const bookingSchema = new mongoose.Schema({
         ref: 'User',
         required: [true, 'User is required']
     },
+    fullName: {
+        type: String,
+        required: [true, 'Full name is required'],
+        trim: true,
+        maxlength: [100, 'Full name cannot exceed 100 characters']
+    },
+    phoneNumber: {
+        type: String,
+        required: [true, 'Phone number is required'],
+        match: [/^[6-9]\d{9}$/, 'Please enter a valid 10-digit Indian mobile number']
+    },
+    email: {
+        type: String,
+        required: [true, 'Email is required'],
+        trim: true,
+        lowercase: true,
+        match: [/\S+@\S+\.\S+/, 'Please enter a valid email address']
+    },
+    gender: {
+        type: String,
+        enum: ['male', 'female', 'unisex'],
+        required: [true, 'Gender is required']
+    },
+    sharing: {
+        type: String,
+        enum: ['single', 'double', 'triple'],
+        required: [true, 'Sharing type is required']
+    },
+    scheduleDate: {
+        type: Date,
+        required: [true, 'Booking date is required']
+    },
     checkIn: {
         type: Date,
         required: [true, 'Check-in date is required']

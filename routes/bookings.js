@@ -29,6 +29,12 @@ const { adminOnly } = require('../middleware/roleAuth');
  *         - guests
  *         - totalAmount
  *         - contactInfo
+ *         - fullName
+ *         - phoneNumber
+ *         - email
+ *         - gender
+ *         - sharing
+ *         - scheduleDate
  *       properties:
  *         _id:
  *           type: string
@@ -53,7 +59,7 @@ const { adminOnly } = require('../middleware/roleAuth');
  *           maximum: 20
  *           description: Number of guests
  *         totalAmount:
- *           type: number
+ *           type: float
  *           minimum: 0
  *           description: Total booking amount
  *         status:
@@ -116,6 +122,30 @@ const { adminOnly } = require('../middleware/roleAuth');
  *                 relation:
  *                   type: string
  *                   description: Relation to guest
+ *         fullName:
+ *           type: string
+ *           maxLength: 100
+ *           description: Full name of the guest
+ *         phoneNumber:
+ *           type: string
+ *           pattern: '^\d{10}$'
+ *           description: 10-digit phone number
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: Email address of the guest
+ *         gender:
+ *           type: string
+ *           enum: [male, female, unisex]
+ *           description: Gender of the guest
+ *         sharing:
+ *           type: string
+ *           enum: [single, double, triple]
+ *           description: Sharing type preference
+ *         scheduleDate:
+ *           type: string
+ *           format: date
+ *           description: Booking date
  *         duration:
  *           type: integer
  *           description: Duration of stay in days (virtual field)
@@ -149,6 +179,12 @@ const { adminOnly } = require('../middleware/roleAuth');
  *             name: "Jane Doe"
  *             phone: "+1234567891"
  *             relation: "Spouse"
+ *         fullName: "John Doe"
+ *         phoneNumber: "9876543210"
+ *         email: "john.doe@example.com"
+ *         gender: "male"
+ *         sharing: "single"
+ *         scheduleDate: "2024-01-15"
  *         duration: 5
  *         bookingReference: "BKD4E5F6A7"
  *     
@@ -160,6 +196,12 @@ const { adminOnly } = require('../middleware/roleAuth');
  *         - checkOut
  *         - guests
  *         - contactInfo
+ *         - fullName
+ *         - phoneNumber
+ *         - email
+ *         - gender
+ *         - sharing
+ *         - scheduleDate
  *       properties:
  *         property:
  *           type: string
@@ -177,6 +219,10 @@ const { adminOnly } = require('../middleware/roleAuth');
  *           minimum: 1
  *           maximum: 20
  *           description: Number of guests
+ *         totalAmount:
+ *           type: float
+ *           minimum: 0
+ *           description: Total amount
  *         specialRequests:
  *           type: string
  *           maxLength: 500
@@ -211,11 +257,36 @@ const { adminOnly } = require('../middleware/roleAuth');
  *                 relation:
  *                   type: string
  *                   description: Relation to guest
+ *         fullName:
+ *           type: string
+ *           maxLength: 100
+ *           description: Full name of the guest
+ *         phoneNumber:
+ *           type: string
+ *           pattern: '^\d{10}$'
+ *           description: 10-digit phone number
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: Email address of the guest
+ *         gender:
+ *           type: string
+ *           enum: [male, female, unisex]
+ *           description: Gender of the guest
+ *         sharing:
+ *           type: string
+ *           enum: [single, double, triple]
+ *           description: Sharing type preference
+ *         scheduleDate:
+ *           type: string
+ *           format: date
+ *           description: Booking date
  *       example:
  *         property: "64f8b2c1d4e5f6a7b8c9d0e2"
  *         checkIn: "2024-01-15"
  *         checkOut: "2024-01-20"
  *         guests: 2
+ *         totalAmount: 500.00
  *         specialRequests: "Late check-in preferred"
  *         paymentMethod: "credit_card"
  *         contactInfo:
@@ -225,6 +296,12 @@ const { adminOnly } = require('../middleware/roleAuth');
  *             name: "Jane Doe"
  *             phone: "+1234567891"
  *             relation: "Spouse"
+ *         fullName: "John Doe"
+ *         phoneNumber: "9876543210" 
+ *         email: "john.doe@example.com"
+ *         gender: "male"
+ *         sharing: "single"
+ *         scheduleDate: "2024-01-15"
  *
  *     AvailabilityCheck:
  *       type: object
