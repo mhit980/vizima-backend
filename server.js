@@ -43,6 +43,10 @@ const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // limit each IP to 100 requests per windowMs
     message: "Too many requests from this IP, please try again later.",
+    trustProxy: true, // Enable if your app is behind a reverse proxy
+    keyGenerator: (req) => {
+        return req.ip || req.connection.remoteAddress; // Use IP address as the key
+    }
 });
 app.use(limiter);
 
