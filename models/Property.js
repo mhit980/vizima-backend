@@ -30,7 +30,8 @@ const propertySchema = new mongoose.Schema({
     },
     bulkAccommodation: {
         type: Boolean,
-        default: false
+        default: false,
+        required: false
     },
     bulkAccommodationType: {
         type: [String],
@@ -38,6 +39,7 @@ const propertySchema = new mongoose.Schema({
             values: ['interns', 'employees', 'students'],
             message: 'Invalid bulk accommodation type'
         },
+        required: false,
         default: []
     },
     sharingType: {

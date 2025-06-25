@@ -20,8 +20,11 @@ const faqRoutes = require("./routes/faq");
 const testimonialRoutes = require("./routes/testimonial");
 const visitBookingRoutes = require("./routes/visitBooking");
 const scheduleVisitRoutes = require("./routes/scheduleVisit");
+const cityRoutes = require("./routes/city");
 
 const app = express();
+
+app.set("trust proxy", 1); // Trust first proxy for rate limiting
 
 // Connect to MongoDB
 connectDB();
@@ -64,6 +67,7 @@ app.use("/api/faqs", faqRoutes);
 app.use("/api/testimonials", testimonialRoutes);
 app.use("/api/visit-bookings", visitBookingRoutes);
 app.use("/api/schedule-visits", scheduleVisitRoutes);
+app.use("/api/cities", cityRoutes);
 
 
 // Health check endpoint

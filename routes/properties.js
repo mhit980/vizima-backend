@@ -871,7 +871,7 @@ router.get('/:id/similar', param('id').isMongoId().withMessage('Invalid property
  *                 example: false
  *                 default: false
  *                 required: false
- *               bulkAccomodationType:
+ *               bulkAccommodationType:
  *                 type: [string]
  *                 enum: [interns, employees, students ]
  *                 example: ["interns", "employees", "students"]
@@ -1077,7 +1077,7 @@ router.post('/', protect, authorize('admin'), createPropertyValidation, createPr
  *                 example: false
  *                 default: false
  *                 required: false
- *               bulkAccomodationType:
+ *               bulkAccommodationType:
  *                 type: [string]
  *                 enum: [interns, employees, students ]
  *                 example: "interns"
