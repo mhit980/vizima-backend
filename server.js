@@ -24,7 +24,7 @@ const cityRoutes = require("./routes/city");
 
 const app = express();
 
-app.set("trust proxy", 1); // Trust first proxy for rate limiting
+app.set('trust proxy', true);
 
 // Connect to MongoDB
 connectDB();
