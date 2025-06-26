@@ -15,7 +15,7 @@ const options = {
         servers: [
             {
                 url: process.env.NODE_ENV === 'production'
-                    ? 'https://vizima-backend.onrender.com'
+                    ? 'https://api.vizima.in'
                     : 'http://localhost:5000',
                 description: process.env.NODE_ENV === 'production' ? 'Production server' : 'Development server'
             }
@@ -127,7 +127,7 @@ const options = {
             }
         ]
     },
-    apis: ['./routes/*.js', './controllers/*.js'], // paths to files containing OpenAPI definitions
+    apis: ['./routes/*.js', './controllers/*.js'],
 };
 
 const specs = swaggerJsdoc(options);
