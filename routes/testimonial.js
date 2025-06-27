@@ -48,7 +48,7 @@ router.post('/', controller.createTestimonial);
  *         schema: { type: number }
  *       - in: query
  *         name: limit
- *         schema: { type: number, default: 3 }
+ *         schema: { type: number, default: 6 }
  *     responses:
  *       200:
  *         description: List of testimonials

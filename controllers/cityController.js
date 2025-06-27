@@ -10,6 +10,26 @@ exports.createCity = async (req, res) => {
     }
 };
 
+// exports.createCity = async (req, res) => {
+//     try {
+//         // Find the max order in existing cities
+//         const lastCity = await City.findOne().sort({ order: -1 }).lean();
+
+//         // Set order: either 1 if no city exists, or last order + 1
+//         const newOrder = lastCity?.order ? lastCity.order + 1 : 1;
+
+//         const city = new City({
+//             ...req.body,
+//             order: newOrder
+//         });
+
+//         const result = await city.save();
+//         return res.status(201).json(result);
+//     } catch (error) {
+//         return res.status(500).json({ message: 'Failed to create city', error });
+//     }
+// };
+
 exports.getAllCities = async (req, res) => {
     try {
         const { page = 1, limit = 3 } = req.query;

@@ -149,9 +149,12 @@ const propertySchema = new mongoose.Schema({
     scheduleVisits: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'ScheduleVisit'
-    }]
+    }],
+
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
 // Indexes for better search performance
@@ -159,8 +162,18 @@ propertySchema.index({ 'location.city': 1 });
 propertySchema.index({ 'location.state': 1 });
 propertySchema.index({ type: 1 });
 propertySchema.index({ price: 1 });
-propertySchema.index({ isAvailable: 1 });
-propertySchema.index({ isFeatured: 1 });
+
+
+// Virtual populate for roomOptions
+propertySchema.virtual('roomOptions', {
+    ref: 'RoomOption',
+    localField: '_id',
+    foreignField: 'property'
+});
+
+
+// Indexes for better search performance
+propertySchema.index({ 'location.city': 1 });
 propertySchema.index({ 'location.coordinates': '2dsphere' });
 
 // Text search index

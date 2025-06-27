@@ -44,7 +44,7 @@ const scheduleVisitSchema = new mongoose.Schema({
     },
     date: {
         type: Date,
-        required: true
+        required: true 
     }
 }, { timestamps: true });
 

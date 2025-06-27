@@ -106,7 +106,8 @@ const getProperties = async (req, res) => {
 const getProperty = async (req, res) => {
     try {
         const property = await Property.findById(req.params.id)
-            .populate('owner', 'name email phone avatar');
+            .populate('owner', 'name email phone avatar')
+            .populate({ path: 'roomOptions' })
 
         if (!property) {
             return res.status(404).json({
