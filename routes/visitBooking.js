@@ -91,70 +91,6 @@ router.put('/:id', protect, authorize('admin'), updateVisitBooking);
 
 /**
  * @swagger
- * /api/visit-bookings/stats:
- *   get:
- *     summary: Get visit booking statistics and the most recent booking
- *     tags: [VisitBookings]
- *     responses:
- *       200:
- *         description: Visit booking stats fetched successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Stats fetched successfully
- *                 data:
- *                   type: object
- *                   properties:
- *                     total:
- *                       type: integer
- *                       example: 4
- *                     pending:
- *                       type: integer
- *                       example: 1
- *                     confirmed:
- *                       type: integer
- *                       example: 1
- *                     cancelled:
- *                       type: integer
- *                       example: 1
- *                     completed:
- *                       type: integer
- *                       example: 1
- *                     recent:
- *                       type: object
- *                       properties:
- *                         _id:
- *                           type: string
- *                         date:
- *                           type: string
- *                           format: date
- *                         timeSlot:
- *                           type: string
- *                         mode:
- *                           type: string
- *                         description:
- *                           type: string
- *                         status:
- *                           type: string
- *                         name:
- *                           type: string
- *                         phone:
- *                           type: string
- *                         createdAt:
- *                           type: string
- *                           format: date-time
- *                         updatedAt:
- *                           type: string
- *                           format: date-time
- */
-router.get('/stats', protect, authorize('admin'), getVisitBookingStats);
-
-/**
- * @swagger
  * /api/visit-bookings:
  *   get:
  *     summary: Get all visit bookings with pagination
@@ -175,6 +111,44 @@ router.get('/stats', protect, authorize('admin'), getVisitBookingStats);
  *         description: List of visit bookings
  */
 router.get('/', protect, authorize('admin'), getAllVisitBookings);
+
+/**
+ * @swagger
+ * /api/visit-bookings/stats:
+ *   get:
+ *     summary: Get visit booking statistics
+ *     tags: [VisitBookings]
+ *     responses:
+ *       200:
+ *         description: Statistics retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Success
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: number
+ *                       example: 124
+ *                     pending:
+ *                       type: number
+ *                       example: 23
+ *                     confirmed:
+ *                       type: number
+ *                       example: 44
+ *                     cancelled:
+ *                       type: number
+ *                       example: 15
+ *                     completed:
+ *                       type: number
+ *                       example: 42
+ */
+router.get('/stats', getVisitBookingStats);
 
 /**
  * @swagger

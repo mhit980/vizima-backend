@@ -100,4 +100,4 @@ exports.getVisitBookingStats = async (req, res) => {
             error: error.message
         });
     }
-  };
+};
