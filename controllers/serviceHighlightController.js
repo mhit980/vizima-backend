@@ -1,4 +1,4 @@
-const ServiceHighlight = require('../models/ServiceHighlight.js');
+const ServiceHighlight = require('../models/ServiceHighlight');
 
 // Create a new service highlight
 const createServiceHighlight = async (req, res) => {
