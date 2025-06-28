@@ -31,3 +31,24 @@ exports.getAllFAQs = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+exports.getFAQById = async (req, res) => {
+    try {
+        const faq = await FAQ.findById(req.params.id);
+        if (!faq) return res.status(404).json({ error: 'FAQ not found' });
+        res.json(faq);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// ✅ New: Delete FAQ by ID
+exports.deleteFAQ = async (req, res) => {
+    try {
+        const faq = await FAQ.findByIdAndDelete(req.params.id);
+        if (!faq) return res.status(404).json({ error: 'FAQ not found' });
+        res.json({ message: 'FAQ deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+  };

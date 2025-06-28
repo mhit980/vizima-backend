@@ -150,6 +150,14 @@ const propertySchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'ScheduleVisit'
     }],
+    // listedVia: [{
+    //     type: String,
+    //     required: false,
+    //     enum: {
+    //         values: ['Vizima', 'RentOk'],
+    //         message: 'Please select a valid source'
+    //     }
+    // }]
 
 }, {
     timestamps: true,

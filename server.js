@@ -23,6 +23,7 @@ const visitBookingRoutes = require("./routes/visitBooking");
 const scheduleVisitRoutes = require("./routes/scheduleVisit");
 const cityRoutes = require("./routes/city");
 const roomOptionRoutes = require("./routes/roomOptions");
+const serviceHighlightRoutes = require("./routes/serviceHighlight");
 
 const app = express();
 
@@ -75,6 +76,7 @@ app.use("/api/visit-bookings", visitBookingRoutes);
 app.use("/api/schedule-visits", scheduleVisitRoutes);
 app.use("/api/cities", cityRoutes);
 app.use("/api/room-options", roomOptionRoutes);
+app.use("/api/service-highlights", serviceHighlightRoutes);
 
 
 // Health check endpoint

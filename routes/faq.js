@@ -24,12 +24,6 @@ const { protect } = require('../middleware/auth');
  *         order:
  *           type: number
  *           example: 1
- *         createdAt:
- *           type: string
- *           format: date-time
- *         updatedAt:
- *           type: string
- *           format: date-time
  */
 
 
@@ -93,5 +87,46 @@ router.put('/:id', FAQController.updateFAQ);
  *                 $ref: '#/components/schemas/FAQ'
  */
 router.get('/', FAQController.getAllFAQs);
+
+/**
+ * @swagger
+ * /api/faqs/{id}:
+ *   get:
+ *     summary: Get FAQ by ID
+ *     tags: [FAQs]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: FAQ retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/FAQ'
+ */
+router.get('/:id', FAQController.getFAQById);
+
+/**
+ * @swagger
+ * /api/faqs/{id}:
+ *   delete:
+ *     summary: Delete FAQ by ID
+ *     tags: [FAQs]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: FAQ deleted successfully
+ */
+router.delete('/:id', FAQController.deleteFAQ);
+
 
 module.exports = router;
