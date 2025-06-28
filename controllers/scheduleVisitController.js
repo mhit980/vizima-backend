@@ -1,4 +1,4 @@
-const ScheduleVisit = require('../models/ScheduleVisit');
+const ScheduleVisit = require('../models/scheduleVisit');
 
 exports.createVisit = async (req, res) => {
     try {
