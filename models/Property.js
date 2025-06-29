@@ -181,7 +181,6 @@ propertySchema.virtual('roomOptions', {
 
 
 // Indexes for better search performance
-propertySchema.index({ 'location.city': 1 });
 propertySchema.index({ 'location.coordinates': '2dsphere' });
 
 // Text search index

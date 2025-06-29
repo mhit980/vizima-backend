@@ -33,11 +33,22 @@ exports.createCity = async (req, res) => {
 exports.getAllCities = async (req, res) => {
     try {
         const { page = 1, limit = 3 } = req.query;
-        const result = await City.find()
+        const pageNum = parseInt(page, 10);
+        const limitNum = parseInt(limit, 10);
+
+        const total = await City.countDocuments();
+        const cities = await City.find()
             .sort({ order: 1 })
-            .skip((page - 1) * limit)
-            .limit(Number(limit));
-        return res.status(200).json(result);
+            .skip((pageNum - 1) * limitNum)
+            .limit(limitNum);
+
+        return res.status(200).json({
+            total,
+            page: pageNum,
+            pageSize: cities.length,
+            totalPages: Math.ceil(total / limitNum),
+            data: cities
+        });
     } catch (error) {
         return res.status(500).json({ message: 'Failed to fetch cities', error });
     }
