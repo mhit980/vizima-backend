@@ -93,22 +93,43 @@ router.put('/:id', protect, authorize('admin'), updateVisitBooking);
  * @swagger
  * /api/visit-bookings:
  *   get:
- *     summary: Get all visit bookings with pagination
+ *     summary: Get all visit bookings with optional filters and pagination
  *     tags: [VisitBookings]
  *     parameters:
  *       - in: query
  *         name: page
  *         schema:
  *           type: integer
- *         default: 1
+ *           default: 1
+ *         description: Page number for pagination
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
- *         default: 10
+ *           default: 10
+ *         description: Number of results per page
+ *       - in: query
+ *         name: mode
+ *         schema:
+ *           type: string
+ *           enum: [physical, virtual]
+ *         description: Filter by mode of visit
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [pending, confirmed, cancelled, completed]
+ *         description: Filter by booking status
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search by name, phone, or description
  *     responses:
  *       200:
- *         description: List of visit bookings
+ *         description: Returns a list of visit bookings
+ *       500:
+ *         description: Internal server error
  */
 router.get('/', protect, authorize('admin'), getAllVisitBookings);
 

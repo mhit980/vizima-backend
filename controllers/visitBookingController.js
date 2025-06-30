@@ -38,18 +38,38 @@ exports.getAllVisitBookings = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
 
-        const bookings = await VisitBooking.find()
+        const filter = {};
+
+        if (req.query.mode && ['physical', 'virtual'].includes(req.query.mode)) {
+            filter.mode = req.query.mode;
+        }
+        if (req.query.status && ['pending', 'confirmed', 'cancelled', 'completed'].includes(req.query.status)) {
+            filter.status = req.query.status;
+        }
+
+        if (req.query.search) {
+            const regex = new RegExp(req.query.search, 'i'); // case-insensitive
+            filter.$or = [
+                { description: regex },
+                { name: regex },
+                { phone: regex }
+            ];
+        }
+
+        const bookings = await VisitBooking.find(filter)
             .skip((page - 1) * limit)
             .limit(limit)
             .sort({ createdAt: -1 });
 
-        const total = await VisitBooking.countDocuments();
+        const total = await VisitBooking.countDocuments(filter);
 
         res.json({ message: 'Success', data: bookings, total, page });
     } catch (error) {
         res.status(500).json({ message: 'Error', error: error.message });
     }
 };
+
+
 
 exports.getVisitBookingById = async (req, res) => {
     try {
