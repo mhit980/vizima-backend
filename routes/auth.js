@@ -10,7 +10,8 @@ const {
     updateProfile,
     verifyEmail,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    logout,
 } = require('../controllers/authController');
 
 // Import middleware
@@ -227,6 +228,32 @@ router.post('/login', [
         .notEmpty()
         .withMessage('Password is required')
 ], login);
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Logout user
+ *     description: Logs out the currently authenticated user. Since JWT is stateless, this simply informs the client to delete the token.
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Logout successful
+ */
+router.post('/logout', protect, logout);
 
 /**
  * @swagger

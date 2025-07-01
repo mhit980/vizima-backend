@@ -74,18 +74,44 @@ router.put('/:id', FAQController.updateFAQ);
  * @swagger
  * /api/faqs:
  *   get:
- *     summary: Get all FAQs ordered by order field
+ *     summary: Get all FAQs ordered by order field with pagination
  *     tags: [FAQs]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of FAQs per page
  *     responses:
  *       200:
- *         description: List of FAQs
+ *         description: Paginated list of FAQs
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/FAQ'
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/FAQ'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     totalItems:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
+ *                     currentPage:
+ *                       type: integer
  */
+
 router.get('/', FAQController.getAllFAQs);
 
 /**

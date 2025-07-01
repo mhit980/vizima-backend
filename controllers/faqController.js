@@ -25,12 +25,28 @@ exports.updateFAQ = async (req, res) => {
 
 exports.getAllFAQs = async (req, res) => {
     try {
-        const faqs = await FAQ.find().sort({ order: 1 });
-        res.json(faqs);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        const [faqs, totalItems] = await Promise.all([
+            FAQ.find().sort({ order: 1 }).skip(skip).limit(limit),
+            FAQ.countDocuments()
+        ]);
+
+        res.json({
+            data: faqs,
+            pagination: {
+                totalItems,
+                totalPages: Math.ceil(totalItems / limit),
+                currentPage: page
+            }
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 exports.getFAQById = async (req, res) => {
     try {
