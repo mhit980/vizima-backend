@@ -8,7 +8,8 @@ const {
     changePassword,
     deleteUserAccount,
     deleteUserById,
-    getUserStats
+    getUserStats,
+    editUserProfile
 } = require('../controllers/userController');
 const { protect, authorize } = require('../middleware/auth'); // Changed 'admin' to 'authorize'
 const { validateUserUpdate, validatePasswordChange } = require('../middleware/validation');
@@ -17,6 +18,7 @@ const router = express.Router();
 
 // Create admin middleware using authorize
 const admin = authorize('admin');
+const user = authorize('user');
 
 /**
  * @swagger
@@ -373,6 +375,69 @@ router.get('/:id', protect, admin, getUserById);
 
 /**
  * @swagger
+ * /api/users/edit-profile:
+ *   put:
+ *     summary: Update current user profile
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: John Doe
+ *               email:
+ *                 type: string
+ *                 example: john@example.com
+ *               phone:
+ *                 type: string
+ *                 example: "9876543210"
+ *               address:
+ *                 type: string
+ *                 example: 123 Street, City
+ *               dob:
+ *                 type: string
+ *                 format: date
+ *                 example: 1995-06-30
+ *               gender:
+ *                 type: string
+ *                 enum: [male, female, unisex]
+ *                 example: male
+ *               maritalStatus:
+ *                 type: string
+ *                 enum: [single, married, divorced, widowed]
+ *                 example: single
+ *               occupation:
+ *                 type: string
+ *                 example: Software Engineer
+ *               company:
+ *                 type: string
+ *                 example: Google
+ *               website:
+ *                 type: string
+ *                 example: https://johndoe.com
+ *               bio:
+ *                 type: string
+ *                 example: Passionate developer.
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: User not found
+ */
+router.put('/edit-profile', protect, user, editUserProfile);
+
+/**
+ * @swagger
  * /api/users/profile:
  *   put:
  *     summary: Update current user profile
@@ -494,6 +559,7 @@ router.put('/change-password', protect, validatePasswordChange, changePassword);
  *         description: Server error
  */
 router.put('/:id', protect, admin, updateUserById);
+
 
 /**
  * @swagger

@@ -402,6 +402,58 @@ const getUserStats = async (req, res) => {
     }
 };
 
+const editUserProfile = async (req, res) => {
+    try {
+        
+        const userId = req.user.id;
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const {
+            name,
+            email,
+            phone,
+            address,
+            dob,
+            gender,
+            maritalStatus,
+            occupation,
+            company,
+            website,
+            bio
+        } = req.body;
+
+        const updatedFields = {
+            ...(name && { name }),
+            ...(email && { email }),
+            ...(phone && { phone }),
+            ...(address && { address }),
+            ...(dob && { dob }),
+            ...(gender && { gender }),
+            ...(maritalStatus && { maritalStatus }),
+            ...(occupation && { occupation }),
+            ...(company && { company }),
+            ...(website && { website }),
+            ...(bio && { bio }),
+        };
+
+        const updatedUser = await User.findByIdAndUpdate(user._id, updatedFields, { new: true });
+
+        if (!updatedUser) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        res.status(200).json({ success: true, message: 'Profile updated successfully', user: updatedUser });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
 module.exports = {
     getAllUsers,
     getUserProfile,
@@ -411,5 +463,6 @@ module.exports = {
     changePassword,
     deleteUserAccount,
     deleteUserById,
-    getUserStats
+    getUserStats,
+    editUserProfile,
 };

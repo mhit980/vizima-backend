@@ -39,6 +39,42 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    gender: {
+        type: String,
+        enum: ['male', 'female', 'unisex'],
+        required: false
+    },
+    bio: {
+        type: String,
+        maxlength: [500, 'Bio cannot exceed 500 characters'],
+        required: false
+    },
+    dob: {
+        type: Date,
+        required: false,
+    },
+    maritalStatus: {
+        type: String,
+        enum: ['single', 'married', 'divorced', 'widowed'],
+        required: false,
+    },
+    address: {
+        type: String,
+        required: false
+    },
+    occupation: {
+        type: String,
+        required: false
+    },
+    company: {
+        type: String,
+        required: false
+    },
+    website: {
+        type: String,
+        required: false,
+        match: [/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/, 'Please enter a valid URL']
+    },
     verificationToken: String,
     resetPasswordToken: String,
     resetPasswordExpire: Date,
