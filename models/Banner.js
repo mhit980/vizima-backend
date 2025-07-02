@@ -56,15 +56,15 @@ const bannerSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    endDate: {
-        type: Date,
-        validate: {
-            validator: function (value) {
-                return !value || value > this.startDate;
-            },
-            message: 'End date must be after start date'
-        }
-    },
+    // endDate: {
+    //     type: Date,
+    //     validate: {
+    //         validator: function (value) {
+    //             return !value || value > this.startDate;
+    //         },
+    //         message: 'End date must be after start date'
+    //     }
+    // },
     clickCount: {
         type: Number,
         default: 0,

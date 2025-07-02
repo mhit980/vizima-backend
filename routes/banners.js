@@ -536,9 +536,6 @@ router.post('/', protect, adminOnly, upload.single('image'), validateBanner, cre
  *               startDate:
  *                 type: string
  *                 format: date-time
- *               endDate:
- *                 type: string
- *                 format: date-time
  *     responses:
  *       200:
  *         description: Banner updated successfully
