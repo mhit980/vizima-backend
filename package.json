@@ -9,6 +9,7 @@
     "seed": "node scripts/seedData.js"
   },
   "dependencies": {
+    "@sendgrid/mail": "^8.1.5",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.41.0",
     "cors": "^2.8.5",
@@ -24,6 +25,7 @@
     "nodemailer": "^6.9.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
+    "twilio": "^5.7.1",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

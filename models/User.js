@@ -13,7 +13,10 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Email is required'],
         unique: true,
         lowercase: true,
-        match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
+        match: [
+            /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
+            'Please enter a valid email address'
+        ]
     },
     password: {
         type: String,
@@ -24,7 +27,7 @@ const userSchema = new mongoose.Schema({
     phone: {
         type: String,
         required: [true, 'Phone number is required'],
-        match: [/^[0-9]{10}$/, 'Please enter a valid 10-digit phone number']
+        match: [/^(\+\d{1,4})?\d{10}$/, 'Please enter a valid phone number with country code (e.g. +911234567890) or 10-digit number']
     },
     role: {
         type: String,
@@ -86,6 +89,35 @@ const userSchema = new mongoose.Schema({
         },
         propertyType: [String]
     },
+    isPhoneVerified: {
+        type: Boolean,
+        default: false,
+    },
+    passwordResetOTP: {
+        type: String,
+        select: false,
+    },
+    passwordResetOTPExpire: {
+        type: Date,
+        select: false
+    },
+    otpVerified: {
+        type: Boolean,
+        default: false,
+        select: false
+    },
+    phoneVerificationOTP: {
+        type: String,
+        select: false
+    },
+    phoneVerificationOTPExpire: {
+        type: Date,
+        select: false
+    },
+    tempPhone: {
+        type: String,
+        select: false
+    }
 }, {
     timestamps: true
 });
