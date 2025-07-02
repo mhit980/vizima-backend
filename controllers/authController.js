@@ -91,7 +91,6 @@ const register = async (req, res) => {
             role: role || 'user'
         });
 
-        console.log('======>>>', user);
 
         // Generate verification token
         const verificationToken = user.generateVerificationToken();
@@ -403,7 +402,6 @@ const forgotPassword = async (req, res) => {
 
         const user = await User.findOne({ email });
 
-        console.log('====>', user);
         if (!user) {
             return res.status(404).json({
                 success: false,
@@ -644,8 +642,6 @@ const verifyPhoneOTP = async (req, res) => {
             phoneVerificationOTP: otp,
             phoneVerificationOTPExpire: { $gt: Date.now() }
         }).select('+tempPhone');
-
-        console.log('===========>>>>', user)
 
         if (!user) {
             return res.status(400).json({
