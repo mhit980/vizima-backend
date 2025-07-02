@@ -7,6 +7,10 @@ const Booking = require('../models/Booking');
 const { spamUtils } = require('../utils/spamUtils');
 
 class SpamController {
+
+    constructor() {
+        this.submitReport = this.submitReport.bind(this);
+    }
     /**
      * Get all spam reports with pagination and filtering
      */
@@ -183,6 +187,7 @@ class SpamController {
      */
     async submitReport(req, res) {
         try {
+
             const { contentType, contentId, category, reason, description, evidence } = req.body;
             const reporterId = req.user.id;
 
