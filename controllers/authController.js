@@ -595,11 +595,11 @@ const sendPhoneOTP = async (req, res) => {
         const { phone } = req.body;
         const userId = req.user.id;
 
-        
+
         const user = await User.findById(userId);
 
-        if(!user) return res.status(404).json({success: false, message: 'User not found'});
-        
+        if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
         const otp = generateOTP();
 
         // await User.findByIdAndUpdate(userId, {
