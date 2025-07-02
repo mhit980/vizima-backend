@@ -12,6 +12,9 @@ const {
     forgotPassword,
     resetPassword,
     logout,
+    verifyResetOTP,
+    sendPhoneOTP,
+    verifyPhoneOTP,
 } = require('../controllers/authController');
 
 // Import middleware
@@ -156,7 +159,7 @@ router.post('/register', [
         .withMessage('Name must be between 2 and 50 characters'),
     body('email')
         .isEmail()
-        .normalizeEmail()
+        .normalizeEmail({ gmail_remove_dots: false, gmail_remove_subaddress: false })
         .withMessage('Please provide a valid email'),
     body('password')
         .isLength({ min: 6 })
@@ -222,7 +225,7 @@ router.post('/register', [
 router.post('/login', [
     body('email')
         .isEmail()
-        .normalizeEmail()
+        .normalizeEmail({ gmail_remove_dots: false, gmail_remove_subaddress: false })
         .withMessage('Please provide a valid email'),
     body('password')
         .notEmpty()
@@ -464,7 +467,7 @@ router.get('/verify-email/:token', verifyEmail);
 router.post('/forgot-password', [
     body('email')
         .isEmail()
-        .normalizeEmail()
+        .normalizeEmail({ gmail_remove_dots: false, gmail_remove_subaddress: false } )
         .withMessage('Please provide a valid email')
 ], forgotPassword);
 
@@ -529,5 +532,99 @@ router.put('/reset-password/:token', [
         .isLength({ min: 6 })
         .withMessage('Password must be at least 6 characters long')
 ], resetPassword);
+
+/**
+ * @swagger
+ * /api/auth/verify-reset-otp:
+ *   post:
+ *     summary: Verify OTP for password reset
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - otp
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "john@example.com"
+ *               otp:
+ *                 type: string
+ *                 example: "123456"
+ *     responses:
+ *       200:
+ *         description: OTP verified successfully
+ *       400:
+ *         description: Invalid or expired OTP
+ */
+router.post('/verify-reset-otp', [
+    body('email').isEmail().withMessage('Please provide a valid email'),
+    body('otp').isLength({ min: 6, max: 6 }).withMessage('OTP must be 6 digits')
+], verifyResetOTP);
+
+/**
+ * @swagger
+ * /api/auth/send-phone-otp:
+ *   post:
+ *     summary: Send OTP for phone verification
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - phone
+ *             properties:
+ *               phone:
+ *                 type: string
+ *                 example: "+1234567890"
+ *     responses:
+ *       200:
+ *         description: OTP sent to phone number
+ *       500:
+ *         description: Failed to send OTP
+ */
+router.post('/send-phone-otp', protect, [
+    body('phone').isMobilePhone().withMessage('Please provide a valid phone number')
+], sendPhoneOTP);
+
+/**
+ * @swagger
+ * /api/auth/verify-phone-otp:
+ *   post:
+ *     summary: Verify phone OTP
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - otp
+ *             properties:
+ *               otp:
+ *                 type: string
+ *                 example: "123456"
+ *     responses:
+ *       200:
+ *         description: Phone number verified successfully
+ *       400:
+ *         description: Invalid or expired OTP
+ */
+router.post('/verify-phone-otp', protect, [
+    body('otp').isLength({ min: 6, max: 6 }).withMessage('OTP must be 6 digits')
+], verifyPhoneOTP);
 
 module.exports = router;

@@ -396,7 +396,7 @@ router.get('/:id', protect, admin, getUserById);
  *                 example: john@example.com
  *               phone:
  *                 type: string
- *                 example: "9876543210"
+ *                 example: "+919876543210"
  *               address:
  *                 type: string
  *                 example: 123 Street, City
@@ -424,6 +424,9 @@ router.get('/:id', protect, admin, getUserById);
  *               bio:
  *                 type: string
  *                 example: Passionate developer.
+ *               tempPhone:
+ *                 type: string
+ *                 example: "+919876543210"
  *     responses:
  *       200:
  *         description: Profile updated successfully
