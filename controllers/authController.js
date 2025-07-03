@@ -589,6 +589,7 @@ const resetPassword = async (req, res) => {
  */
 
 const sendPhoneOTP = async (req, res) => {
+    let user;
     try {
         const { phone } = req.body;
 
@@ -602,7 +603,7 @@ const sendPhoneOTP = async (req, res) => {
         const otp = generateOTP();
 
 
-        let user = await User.findOne({ phone: phone });
+        user = await User.findOne({ phone: phone });
 
         if (user) {
             user.tempPhone = phone;
