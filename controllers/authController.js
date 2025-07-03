@@ -670,12 +670,14 @@ const verifyPhoneOTP = async (req, res) => {
         user.tempPhone = undefined;
         await user.save();
 
+        const token = generateToken(user._id);
+
         res.status(200).json({
             success: true,
             message: 'Phone number verified successfully',
             data: {
                 user: {
-                    // id: user._id,
+                    token,
                     phone: user.phone,
                     isPhoneVerified: user.isPhoneVerified
                 }
