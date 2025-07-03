@@ -52,6 +52,7 @@ const allowedOrigins = [
     'https://api.vizima.in',
     'https://vizima-re2y.vercel.app',
     'https://vizima-dashboard.vercel.app',
+    'https://admin.vizima.in'
 ];
 
 app.use(
