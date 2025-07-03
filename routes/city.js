@@ -70,7 +70,7 @@ router.post('/', cityController.createCity);
  *         name: limit
  *         schema:
  *           type: integer
- *           example: 3
+ *           example: 6
  *     responses:
  *       200:
  *         description: List of cities

@@ -37,7 +37,7 @@ exports.getAllCities = async (req, res) => {
         const limitNum = parseInt(limit, 10);
 
         const total = await City.countDocuments();
-        const cities = await City.find()
+        const cities = await City.find({ isVisible: true })
             .sort({ order: 1 })
             .skip((pageNum - 1) * limitNum)
             .limit(limitNum);

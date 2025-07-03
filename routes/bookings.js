@@ -497,10 +497,9 @@ router.get('/admin/stats', protect, adminOnly, getBookingStats);
  *           enum: [pending, paid, failed, refunded, partial]
  *         description: Filter by payment status
  *       - in: query
- *         name: property
+ *         name: search
  *         schema:
  *           type: string
- *         description: Filter by property ID
  *     responses:
  *       200:
  *         description: All bookings retrieved successfully

@@ -120,8 +120,15 @@ const getAllBookings = async (req, res) => {
         if (req.query.paymentStatus) {
             filter.paymentStatus = req.query.paymentStatus;
         }
-        if (req.query.property) {
-            filter.property = req.query.property;
+
+        // Search on fullName, phoneNumber, email if search is provided
+        if (req.query.search) {
+            const searchRegex = new RegExp(req.query.search, 'i');
+            filter.$or = [
+                { fullName: searchRegex },
+                { phoneNumber: searchRegex },
+                { email: searchRegex }
+            ];
         }
 
         const bookings = await Booking.find(filter)

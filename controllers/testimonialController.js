@@ -15,7 +15,7 @@ exports.getAllTestimonials = async (req, res) => {
         const limit = parseInt(req.query.limit) || 3;
         const skip = (page - 1) * limit;
 
-        const testimonials = await Testimonial.find()
+        const testimonials = await Testimonial.find({ status: 'approved' })
             .sort({ order: 1 })
             .skip(skip)
             .limit(limit);

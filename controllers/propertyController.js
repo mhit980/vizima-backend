@@ -54,9 +54,12 @@ const getProperties = async (req, res) => {
             query.amenities = { $in: amenitiesArray };
         }
 
-        // Text search
+        // Text search on title and description
         if (search) {
-            query.$text = { $search: search };
+            query.$or = [
+            { title: { $regex: search, $options: 'i' } },
+            { description: { $regex: search, $options: 'i' } }
+            ];
         }
 
         // Pagination
