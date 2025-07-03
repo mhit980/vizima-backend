@@ -46,21 +46,30 @@ app.use(helmet());
 // );
 
 const allowedOrigins = [
-    `${process.env.FRONTEND_URL}`,
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    'https://api.vizima.in',
-    'https://vizima-re2y.vercel.app',
-    'https://vizima-dashboard.vercel.app',
-    'https://admin.vizima.in'
+  process.env.FRONTEND_URL,
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'https://api.vizima.in',
+  'https://vizima-re2y.vercel.app',
+  'https://vizima-dashboard.vercel.app',
+  'https://admin.vizima.in',
 ];
 
 app.use(
-    cors({
-        origin: allowedOrigins,
-        credentials: true,
-    })
-  );
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like curl or Postman)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error(`Not allowed by CORS: ${origin}`));
+      }
+    },
+    credentials: true,
+  })
+);
+
 
 // Rate limiting
 const limiter = rateLimit({
