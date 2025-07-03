@@ -591,26 +591,35 @@ const resetPassword = async (req, res) => {
 const sendPhoneOTP = async (req, res) => {
     try {
         const { phone } = req.body;
-        const userId = req.user.id;
 
-
-        const user = await User.findById(userId);
-
-        if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+        if(!phone) {
+            return res.status(400).json({
+                success: false,
+                message: 'Phone number is required'
+            });
+        }
 
         const otp = generateOTP();
 
-        // await User.findByIdAndUpdate(userId, {
-        //     tempPhone: phone,
-        //     phoneVerificationOTP: otp,
-        //     phoneVerificationOTPExpire: Date.now() + 10 * 60 * 1000,
-        // });
-        await sendSMS(phone, `Your phone verification OTP is: ${otp}. This OTP will expire in 10 minutes.`);
 
-        user.tempPhone = phone;
-        user.phoneVerificationOTP = otp;
-        user.phoneVerificationOTPExpire = Date.now() + 10 * 60 * 1000; // 10 min expiry
-        await user.save();
+        let user = await User.findOne({ phone: phone });
+
+        if (user) {
+            user.tempPhone = phone;
+            user.phoneVerificationOTP = otp;
+            user.phoneVerificationOTPExpire = Date.now() + 10 * 60 * 1000;
+            await user.save();
+        } else {
+            user = new User({
+                phone: phone,
+                tempPhone: phone,
+                phoneVerificationOTP: otp,
+                phoneVerificationOTPExpire: Date.now() + 10 * 60 * 1000,
+            });
+            await user.save();
+        }
+
+        await sendSMS(phone, `Your phone verification OTP is: ${otp}. This OTP will expire in 10 minutes.`);
 
 
         res.status(200).json({
@@ -618,6 +627,10 @@ const sendPhoneOTP = async (req, res) => {
             message: 'OTP sent to your phone number'
         });
     } catch (error) {
+        
+        if (user && user._id ) {
+            await User.findByIdAndDelete(user._id);
+        }
         console.error('Send phone OTP error:', error);
         res.status(500).json({
             success: false,
@@ -634,11 +647,10 @@ const sendPhoneOTP = async (req, res) => {
 
 const verifyPhoneOTP = async (req, res) => {
     try {
-        const { otp } = req.body;
-        const userId = req.user.id;
+        const { otp, phone } = req.body;
 
         const user = await User.findOne({
-            _id: userId,
+            phone: phone,
             phoneVerificationOTP: otp,
             phoneVerificationOTPExpire: { $gt: Date.now() }
         }).select('+tempPhone');
@@ -662,7 +674,7 @@ const verifyPhoneOTP = async (req, res) => {
             message: 'Phone number verified successfully',
             data: {
                 user: {
-                    id: user._id,
+                    // id: user._id,
                     phone: user.phone,
                     isPhoneVerified: user.isPhoneVerified
                 }

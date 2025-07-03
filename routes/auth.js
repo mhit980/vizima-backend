@@ -593,7 +593,7 @@ router.post('/verify-reset-otp', [
  *       500:
  *         description: Failed to send OTP
  */
-router.post('/send-phone-otp', protect, [
+router.post('/send-phone-otp', [
     body('phone').isMobilePhone().withMessage('Please provide a valid phone number')
 ], sendPhoneOTP);
 
@@ -612,8 +612,12 @@ router.post('/send-phone-otp', protect, [
  *           schema:
  *             type: object
  *             required:
+ *               - phone
  *               - otp
  *             properties:
+ *               phone:
+ *                 type: string
+ *                 example: "+916201247898"
  *               otp:
  *                 type: string
  *                 example: "123456"
@@ -623,7 +627,7 @@ router.post('/send-phone-otp', protect, [
  *       400:
  *         description: Invalid or expired OTP
  */
-router.post('/verify-phone-otp', protect, [
+router.post('/verify-phone-otp', [
     body('otp').isLength({ min: 6, max: 6 }).withMessage('OTP must be 6 digits')
 ], verifyPhoneOTP);
 
