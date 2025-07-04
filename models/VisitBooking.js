@@ -49,7 +49,8 @@ const visitBookingSchema = new mongoose.Schema({
     },
     phone: {
         type: String,
-        required: true
+        required: true,
+        match: [/^\+\d{1,4}[6-9]\d{9}$/, 'Please enter a valid phone number with country code (e.g., +919876543210)']
     }
 }, { timestamps: true });
 

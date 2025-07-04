@@ -46,7 +46,7 @@ const { protect, authorize } = require('../middleware/auth')
  *                 type: string
  *               phone:
  *                 type: string
- *                 example: '9988774422'
+ *                 example: '+919988774422'
  * 
  *     responses:
  *       201:
@@ -81,8 +81,11 @@ router.post('/', createVisitBooking);
  *                 example: 'confirmed'
  *               timeSlot:
  *                 type: string
+ *                 example: '11:00 AM'
  *               phone:
  *                 type: string
+ *                 example: '+919988774422'
+ * 
  *     responses:
  *       200:
  *         description: Updated successfully

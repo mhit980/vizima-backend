@@ -1,12 +1,13 @@
 const VisitBooking = require('../models/VisitBooking');
 
-const isValidPhone = (phone) => /^\d{10}$/.test(phone);
+const isValidPhone = (phone) => /^\+\d{1,4}[6-9]\d{9}$/.test(phone);
+
 
 exports.createVisitBooking = async (req, res) => {
     try {
         const { phone } = req.body;
         if (!isValidPhone(phone)) {
-            return res.status(400).json({ message: 'Phone number must be 10 digits' });
+            return res.status(400).json({ message: 'Phone number must be a valid number with its extention' });
         }
 
         const booking = new VisitBooking(req.body);
@@ -21,7 +22,7 @@ exports.updateVisitBooking = async (req, res) => {
     try {
         const { phone } = req.body;
         if (phone && !isValidPhone(phone)) {
-            return res.status(400).json({ message: 'Phone number must be 10 digits' });
+            return res.status(400).json({ message: 'Phone number must be a valid number with its extention' });
         }
 
         const updated = await VisitBooking.findByIdAndUpdate(req.params.id, req.body, { new: true });
