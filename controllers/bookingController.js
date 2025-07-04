@@ -34,8 +34,6 @@ const createBooking = async (req, res) => {
             });
         }
 
-        console.log('Property exists:', propertyExists);
-
         // Check if property is active
         if (!propertyExists.isAvailable) {
             return res.status(400).json({

@@ -105,7 +105,7 @@ const { adminOnly } = require('../middleware/roleAuth');
  *           properties:
  *             phone:
  *               type: string
- *               description: Contact phone number
+ *               description: Contact phone number (with country code, e.g. +911234567890)
  *             email:
  *               type: string
  *               format: email
@@ -118,7 +118,7 @@ const { adminOnly } = require('../middleware/roleAuth');
  *                   description: Emergency contact name
  *                 phone:
  *                   type: string
- *                   description: Emergency contact phone
+ *                   description: Emergency contact phone (with country code, e.g. +911234567890)
  *                 relation:
  *                   type: string
  *                   description: Relation to guest
@@ -128,8 +128,8 @@ const { adminOnly } = require('../middleware/roleAuth');
  *           description: Full name of the guest
  *         phoneNumber:
  *           type: string
- *           pattern: '^\d{10}$'
- *           description: 10-digit phone number
+ *           pattern: '^(\+\d{1,4})?\d{10,15}$'
+ *           description: Phone number with country code (e.g. +911234567890)
  *         email:
  *           type: string
  *           format: email
@@ -173,14 +173,14 @@ const { adminOnly } = require('../middleware/roleAuth');
  *         paymentMethod: "credit_card"
  *         specialRequests: "Late check-in preferred"
  *         contactInfo:
- *           phone: "+1234567890"
+ *           phone: "+911234567890"
  *           email: "john@example.com"
  *           emergencyContact:
  *             name: "Jane Doe"
- *             phone: "+1234567891"
+ *             phone: "+911234567891"
  *             relation: "Spouse"
  *         fullName: "John Doe"
- *         phoneNumber: "9876543210"
+ *         phoneNumber: "+911234567890"
  *         email: "john.doe@example.com"
  *         gender: "male"
  *         sharing: "single"
@@ -240,7 +240,7 @@ const { adminOnly } = require('../middleware/roleAuth');
  *           properties:
  *             phone:
  *               type: string
- *               description: Contact phone number
+ *               description: Contact phone number (with country code, e.g. +911234567890)
  *             email:
  *               type: string
  *               format: email
@@ -253,7 +253,7 @@ const { adminOnly } = require('../middleware/roleAuth');
  *                   description: Emergency contact name
  *                 phone:
  *                   type: string
- *                   description: Emergency contact phone
+ *                   description: Emergency contact phone (with country code, e.g. +911234567891)
  *                 relation:
  *                   type: string
  *                   description: Relation to guest
@@ -263,8 +263,8 @@ const { adminOnly } = require('../middleware/roleAuth');
  *           description: Full name of the guest
  *         phoneNumber:
  *           type: string
- *           pattern: '^\d{10}$'
- *           description: 10-digit phone number
+ *           pattern: '^(\+\d{1,4})?\d{10,15}$'
+ *           description: Phone number with country code (e.g. +911234567890)
  *         email:
  *           type: string
  *           format: email
@@ -290,14 +290,14 @@ const { adminOnly } = require('../middleware/roleAuth');
  *         specialRequests: "Late check-in preferred"
  *         paymentMethod: "credit_card"
  *         contactInfo:
- *           phone: "+1234567890"
+ *           phone: "+911234567890"
  *           email: "john@example.com"
  *           emergencyContact:
  *             name: "Jane Doe"
- *             phone: "+1234567891"
+ *             phone: "+911234567891"
  *             relation: "Spouse"
  *         fullName: "John Doe"
- *         phoneNumber: "9876543210" 
+ *         phoneNumber: "+911234567890"
  *         email: "john.doe@example.com"
  *         gender: "male"
  *         sharing: "single"

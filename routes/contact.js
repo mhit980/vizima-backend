@@ -32,7 +32,7 @@ const router = express.Router();
  *                 example: johndoe@example.com
  *               mobileNumber:
  *                 type: string
- *                 example: "+91 98765 43210"
+ *                 example: "+919876543210"
  *               message:
  *                 type: string
  *                 maxLength: 1000
@@ -95,8 +95,8 @@ router.post(
             .isEmail()
             .withMessage('Valid email is required'),
         body('mobileNumber')
-            .matches(/^\+91\s\d{5}\s\d{5}$/)
-            .withMessage('Valid Indian mobile number is required (e.g., +91 98765 43210)'),
+            .matches(/^\+\d{1,4}[6-9]\d{9}$/)
+            .withMessage('Valid mobile number with country code is required (e.g., +91 98765 43210)'),
         body('message')
             .trim()
             .notEmpty()

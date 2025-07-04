@@ -20,7 +20,7 @@ const bookingSchema = new mongoose.Schema({
     phoneNumber: {
         type: String,
         required: [true, 'Phone number is required'],
-        match: [/^[6-9]\d{9}$/, 'Please enter a valid 10-digit Indian mobile number']
+        match: [/^\+\d{1,4}[6-9]\d{9}$/, 'Please enter a valid phone number with country code (e.g., +919876543210)']
     },
     email: {
         type: String,
@@ -112,7 +112,8 @@ const bookingSchema = new mongoose.Schema({
     contactInfo: {
         phone: {
             type: String,
-            required: [true, 'Contact phone is required']
+            required: [true, 'Contact phone is required'],
+            match: [/^\+\d{1,4}[6-9]\d{9}$/, 'Please enter a valid phone number with country code (e.g., +919876543210)']
         },
         email: {
             type: String,

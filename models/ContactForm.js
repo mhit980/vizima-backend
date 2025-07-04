@@ -17,7 +17,7 @@ const contactMessageSchema = new mongoose.Schema({
     mobileNumber: {
         type: String,
         required: [true, 'Mobile number is required'],
-        match: [/^\+91\s\d{5}\s\d{5}$/, 'Please enter a valid Indian mobile number']
+        match: [/^\+\d{1,4}[6-9]\d{9}$/, 'Please enter a valid phone number with country code (e.g., +919876543210)']
     },
     message: {
         type: String,
