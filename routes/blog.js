@@ -48,6 +48,83 @@ router.post('/', protect, blogController.createBlog);
 /**
  * @swagger
  * /api/blogs/{id}:
+ *   put:
+ *     summary: Update a blog by ID
+ *     tags: [Blogs]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               category:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *                 enum: [draft, published]
+ *               seo:
+ *                 type: object
+ *                 properties:
+ *                   title:
+ *                     type: string
+ *                   meta:
+ *                     type: string
+ *     responses:
+ *       200:
+ *         description: Blog updated
+ *       400:
+ *         description: Invalid input
+ *       404:
+ *         description: Blog not found
+ */
+router.put('/:id', protect, blogController.updateBlog);
+
+/**
+ * @swagger
+ * /api/blogs/me:
+ *   get:
+ *     summary: Get blogs of the current user
+ *     tags: [Blogs]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: number
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: number
+ *         description: Number of blogs per page
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search by blog title or category
+ *     responses:
+ *       200:
+ *         description: Paginated list of current user's blogs
+ */
+router.get('/me', protect, blogController.currentUserBlogs);
+
+
+
+/**
+ * @swagger
+ * /api/blogs/{id}:
  *   get:
  *     summary: Get blog by ID
  *     tags: [Blogs]
@@ -119,74 +196,6 @@ router.get('/', blogController.getAllBlogs);
  *         description: List of user blogs
  */
 router.get('/user/:userId', protect, blogController.getBlogsByUserId);
-
-/**
- * @swagger
- * /api/blogs/me:
- *   get:
- *     summary: Get blogs of the current user
- *     tags: [Blogs]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: page
- *         schema:
- *           type: number
- *         description: Page number for pagination
- *       - in: query
- *         name: limit
- *         schema:
- *           type: number
- *         description: Number of blogs per page
- *       - in: query
- *         name: search
- *         schema:
- *           type: string
- *         description: Search by blog title or category
- *     responses:
- *       200:
- *         description: Paginated list of current user's blogs
- */
-router.get('/me', protect, blogController.currentUserBlogs);
-
-/**
- * @swagger
- * /api/blogs/{id}:
- *   put:
- *     summary: Update a blog by ID
- *     tags: [Blogs]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               title:
- *                 type: string
- *               category:
- *                 type: string
- *               status:
- *                 type: string
- *                 enum: [draft, published]
- *               seo:
- *                 type: object
- *                 properties:
- *                   title:
- *                     type: string
- *                   meta:
- *                     type: string
- */
-router.put('/:id', protect, blogController.updateBlog);
 
 
 /**

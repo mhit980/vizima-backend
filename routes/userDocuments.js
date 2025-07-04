@@ -67,24 +67,7 @@ router.post(
     controller.createDocument
 );
 
-/**
- * @swagger
- * /api/user-documents/{id}:
- *   get:
- *     summary: Get a document by ID
- *     tags: [UserDocuments]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: Document ID
- *     responses:
- *       200:
- *         description: Document found
- */
-router.get('/:id', controller.getDocumentById);
+
 
 /**
  * @swagger
@@ -122,6 +105,25 @@ router.get('/', protect, controller.getAllDocumentsAdmin);
  *         description: List of user documents
  */
 router.get('/user', protect, controller.getUserDocuments);
+
+/**
+ * @swagger
+ * /api/user-documents/{id}:
+ *   get:
+ *     summary: Get a document by ID
+ *     tags: [UserDocuments]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Document ID
+ *     responses:
+ *       200:
+ *         description: Document found
+ */
+router.get('/:id', controller.getDocumentById);
 
 /**
  * @swagger

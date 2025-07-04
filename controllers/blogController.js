@@ -189,11 +189,11 @@ exports.deleteBlog = async (req, res) => {
 
         if (!blog) return res.status(404).json({ error: 'Blog not found' });
 
-        if (blog.userId.toString() !== req.user._id.toString()) {
+        if (blog.userId.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
             return res.status(403).json({ error: 'Unauthorized' });
         }
 
-        await blog.remove();
+        await Blog.findByIdAndDelete(blog.id);
         res.json({ message: 'Blog deleted' });
     } catch (err) {
         res.status(500).json({ error: err.message });
