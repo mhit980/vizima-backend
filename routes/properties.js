@@ -9,7 +9,8 @@ const {
     searchByLocation,
     getFeaturedProperties,
     getPropertyStats,
-    getSimilarProperties
+    getSimilarProperties,
+    getPaginatedPropertyTitles,
 } = require('../controllers/propertyController');
 const { protect, authorize } = require('../middleware/auth');
 const upload = require('../middleware/upload');
@@ -160,6 +161,10 @@ const router = express.Router();
  *                 type: string
  *                 enum: [hospital, school, mall, restaurant, transport, other]
  *                 example: "hospital"
+ *         microSiteLink:
+ *           type: string
+ *           description: Link to microSite
+ *           example: "https://example.com/microsite"
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -390,8 +395,13 @@ const createPropertyValidation = [
     body('bulkAccommodationType.*')
         .optional()
         .isIn(['interns', 'employees', 'students'])
-        .withMessage('Invalid bulkAccommodationType value')
+        .withMessage('Invalid bulkAccommodationType value'),
     
+    body('microSiteLink')
+        .optional()
+        .isURL()
+        .withMessage('microSiteLink must be a valid URL'),
+
 ];
 
 const updatePropertyValidation = [
@@ -444,7 +454,11 @@ const updatePropertyValidation = [
     body('area')
         .optional()
         .isFloat({ min: 1 })
-        .withMessage('Area must be at least 1 square foot')
+        .withMessage('Area must be at least 1 square foot'),
+    body('microSiteLink')
+        .optional()
+        .isURL()
+        .withMessage('microSiteLink must be a valid URL')
 ];
 
 /**
@@ -733,6 +747,61 @@ router.get('/search/location', searchByLocation);
 
 /**
  * @swagger
+ * /api/properties/property-titles:
+ *   get:
+ *     summary: Get paginated list of property titles and IDs
+ *     tags: [Properties]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of properties per page
+ *     responses:
+ *       200:
+ *         description: Paginated property list
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 total:
+ *                   type: integer
+ *                   example: 50
+ *                 page:
+ *                   type: integer
+ *                   example: 1
+ *                 pageSize:
+ *                   type: integer
+ *                   example: 10
+ *                 totalPages:
+ *                   type: integer
+ *                   example: 5
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: "64e1f8c2c5c4c0a3d2e6abcd"
+ *                       title:
+ *                         type: string
+ *                         example: "Luxury 2BHK Apartment in Downtown"
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/property-titles', getPaginatedPropertyTitles);
+
+/**
+ * @swagger
  * /api/properties/{id}:
  *   get:
  *     summary: Get single property by ID
@@ -966,6 +1035,10 @@ router.get('/:id/similar', param('id').isMongoId().withMessage('Invalid property
  *                       type: string
  *                       enum: [hospital, school, mall, restaurant, transport, other]
  *                       example: "hospital"
+ *               microSiteLink:
+ *                 type: string
+ *                 description: Link to microSite
+ *                 example: "https://example.com/microsite"
  *     responses:
  *       201:
  *         description: Property created successfully
@@ -1166,6 +1239,10 @@ router.post('/', protect, authorize('admin'), createPropertyValidation, createPr
  *                       type: string
  *                       enum: [hospital, school, mall, restaurant, transport, other]
  *                       example: "mall"
+ *               microSiteLink:
+ *                type: string
+ *                description: Link to microSite
+ *                example: "https://example.com/microsite"
  *     responses:
  *       200:
  *         description: Property updated successfully
@@ -1295,5 +1372,7 @@ router.put('/:id', protect, authorize('admin'), param('id').isMongoId().withMess
  *               $ref: '#/components/schemas/Error'
  */
 router.delete('/:id', protect, authorize('admin'), param('id').isMongoId().withMessage('Invalid property ID'), deleteProperty);
+
+
 
 module.exports = router;

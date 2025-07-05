@@ -524,6 +524,34 @@ const getSimilarProperties = async (req, res) => {
     }
 };
 
+
+const getPaginatedPropertyTitles = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        const skip = (page - 1) * limit;
+
+        const [total, properties] = await Promise.all([
+            Property.countDocuments(),
+            Property.find({}, { title: 1 })
+                .skip(skip)
+                .limit(limit)
+        ]);
+
+        return res.status(200).json({
+            total,
+            page,
+            pageSize: limit,
+            totalPages: Math.ceil(total / limit),
+            data: properties
+        });
+    } catch (error) {
+        console.error('Error fetching properties:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+
 module.exports = {
     getProperties,
     getProperty,
@@ -533,5 +561,6 @@ module.exports = {
     searchByLocation,
     getFeaturedProperties,
     getPropertyStats,
-    getSimilarProperties
+    getSimilarProperties,
+    getPaginatedPropertyTitles
 };

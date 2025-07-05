@@ -157,7 +157,11 @@ const propertySchema = new mongoose.Schema({
     //         values: ['Vizima', 'RentOk'],
     //         message: 'Please select a valid source'
     //     }
-    // }]
+    // }],
+    microSiteLink: {
+        type: String,
+        required: false,
+    }
 
 }, {
     timestamps: true,
