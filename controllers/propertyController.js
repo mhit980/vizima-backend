@@ -537,6 +537,7 @@ const getPaginatedPropertyTitles = async (req, res) => {
             Property.find({}, { title: 1 })
                 .skip(skip)
                 .limit(limit)
+                .lean({ virtuals: false })
         ]);
 
         return res.status(200).json({
@@ -550,7 +551,7 @@ const getPaginatedPropertyTitles = async (req, res) => {
         console.error('Error fetching properties:', error);
         return res.status(500).json({ message: 'Internal server error' });
     }
-  };
+};
 
 module.exports = {
     getProperties,
