@@ -27,28 +27,45 @@ class SpamController {
                 sortOrder = 'desc'
             } = req.query;
 
+            const pageNum = parseInt(page, 10);
+            const limitNum = parseInt(limit, 10);
+            const skip = (pageNum - 1) * limitNum;
+
+            // Build filter
             const filter = {};
             if (status) filter.status = status;
             if (severity) filter.severity = severity;
             if (contentType) filter.contentType = contentType;
             if (reportType) filter.reportType = reportType;
 
-            const options = {
-                page: parseInt(page),
-                limit: parseInt(limit),
-                sort: { [sortBy]: sortOrder === 'desc' ? -1 : 1 },
-                populate: [
-                    { path: 'reportedUser', select: 'firstName lastName email' },
-                    { path: 'reporter', select: 'firstName lastName email' },
-                    { path: 'reviewer', select: 'firstName lastName email' }
-                ]
-            };
+            // Count total documents
+            const totalDocs = await SpamReport.countDocuments(filter);
 
-            const reports = await SpamReport.paginate(filter, options);
+            // Fetch paginated data
+            const docs = await SpamReport.find(filter)
+                .sort({ [sortBy]: sortOrder === 'desc' ? -1 : 1 })
+                .skip(skip)
+                .limit(limitNum)
+                .populate('reportedUser', 'firstName lastName email')
+                .populate('reporter', 'firstName lastName email')
+                .populate('reviewer', 'firstName lastName email')
+                .lean();
 
-            res.json({
+            const totalPages = Math.ceil(totalDocs / limitNum);
+            const hasNextPage = pageNum < totalPages;
+            const hasPrevPage = pageNum > 1;
+
+            res.status(200).json({
                 success: true,
-                data: reports
+                data: {
+                    docs,
+                    totalDocs,
+                    limit: limitNum,
+                    page: pageNum,
+                    totalPages,
+                    hasNextPage,
+                    hasPrevPage
+                }
             });
         } catch (error) {
             console.error('Get spam reports error:', error);
@@ -58,6 +75,7 @@ class SpamController {
             });
         }
     }
+    
 
     /**
      * Get urgent spam reports that need immediate attention

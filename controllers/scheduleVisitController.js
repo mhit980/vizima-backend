@@ -25,19 +25,32 @@ exports.getAllVisits = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 3;
         const skip = (page - 1) * limit;
+        const search = req.query.search || '';
 
-        const visits = await ScheduleVisit.find()
+        const filter = {};
+
+        if (search) {
+            const regex = new RegExp(search, 'i'); // case-insensitive partial match
+            filter.$or = [
+                { propertyName: regex },
+                { fullName: regex },
+                { phone: regex },
+                { email: regex }
+            ];
+        }
+
+        const visits = await ScheduleVisit.find(filter)
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
 
-        const total = await ScheduleVisit.countDocuments();
+        const total = await ScheduleVisit.countDocuments(filter);
 
         res.json({ data: visits, total, page, limit });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-};
+}
 
 exports.getVisitById = async (req, res) => {
     try {

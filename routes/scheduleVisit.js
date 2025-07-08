@@ -110,6 +110,11 @@ router.put('/:id', scheduleVisitController.updateVisit);
  *         schema:
  *           type: integer
  *         example: 10
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search by propertyName, fullName, phone, or email
  *     responses:
  *       200:
  *         description: List of visits
