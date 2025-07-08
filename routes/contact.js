@@ -1,6 +1,11 @@
 const express = require('express');
-const { body } = require('express-validator');
-const { submitContactForm } = require('../controllers/contactController');
+const { body, param, query } = require('express-validator');
+const {
+    submitContactForm,
+    getAllContactMessages,
+    getContactMessageById,
+    deleteContactMessageById,
+} = require('../controllers/contactController');
 
 const router = express.Router();
 
@@ -24,85 +29,100 @@ const router = express.Router();
  *             properties:
  *               fullName:
  *                 type: string
- *                 maxLength: 100
- *                 example: John Doe
  *               email:
  *                 type: string
- *                 format: email
- *                 example: johndoe@example.com
  *               mobileNumber:
  *                 type: string
- *                 example: "+919876543210"
  *               message:
  *                 type: string
- *                 maxLength: 1000
- *                 example: I would like to know more about your services.
  *     responses:
  *       201:
  *         description: Message submitted successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: object
- *                   properties:
- *                     _id:
- *                       type: string
- *                     fullName:
- *                       type: string
- *                     email:
- *                       type: string
- *                     mobileNumber:
- *                       type: string
- *                     message:
- *                       type: string
- *                     createdAt:
- *                       type: string
- *                       format: date-time
  *       400:
  *         description: Validation error
- *         content:
- *           application/json:
- *             example:
- *               success: false
- *               message: Validation failed
- *               errors:
- *                 - msg: Email is required
- *                   param: email
- *                   location: body
  *       500:
  *         description: Server error
- *         content:
- *           application/json:
- *             example:
- *               success: false
- *               message: Server error
  */
-
 router.post(
     '/message',
     [
-        body('fullName')
-            .trim()
-            .notEmpty()
-            .withMessage('Full name is required'),
-        body('email')
-            .isEmail()
-            .withMessage('Valid email is required'),
+        body('fullName').trim().notEmpty().withMessage('Full name is required'),
+        body('email').isEmail().withMessage('Valid email is required'),
         body('mobileNumber')
             .matches(/^\+\d{1,4}[6-9]\d{9}$/)
-            .withMessage('Valid mobile number with country code is required (e.g., +91 98765 43210)'),
-        body('message')
-            .trim()
-            .notEmpty()
-            .withMessage('Message is required')
+            .withMessage('Valid mobile number with country code is required'),
+        body('message').trim().notEmpty().withMessage('Message is required'),
     ],
     submitContactForm
 );
+
+/**
+ * @swagger
+ * /api/contact/messages:
+ *   get:
+ *     summary: Get all contact messages with pagination and search
+ *     tags: [Contact]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         example: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         example: 10
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search by fullName, email, mobileNumber, or message
+ *     responses:
+ *       200:
+ *         description: A list of contact messages
+ */
+router.get('/messages', getAllContactMessages);
+
+/**
+ * @swagger
+ * /api/contact/message/{id}:
+ *   get:
+ *     summary: Get a contact message by ID
+ *     tags: [Contact]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The contact message ID
+ *     responses:
+ *       200:
+ *         description: Contact message found
+ *       404:
+ *         description: Not found
+ */
+router.get('/message/:id', getContactMessageById);
+
+/**
+ * @swagger
+ * /api/contact/message/{id}:
+ *   delete:
+ *     summary: Delete a contact message by ID
+ *     tags: [Contact]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Message deleted
+ *       404:
+ *         description: Not found
+ */
+router.delete('/message/:id', deleteContactMessageById);
 
 module.exports = router;
