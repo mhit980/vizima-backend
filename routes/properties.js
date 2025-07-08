@@ -484,16 +484,6 @@ const updatePropertyValidation = [
  *           default: 10
  *         description: Number of properties per page
  *       - in: query
- *         name: city
- *         schema:
- *           type: string
- *         description: Filter by city
- *       - in: query
- *         name: state
- *         schema:
- *           type: string
- *         description: Filter by state
- *       - in: query
  *         name: type
  *         schema:
  *           type: string

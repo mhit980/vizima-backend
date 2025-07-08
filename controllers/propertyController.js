@@ -11,8 +11,6 @@ const getProperties = async (req, res) => {
         const {
             page = 1,
             limit = 10,
-            city,
-            state,
             type,
             minPrice,
             maxPrice,
@@ -32,8 +30,6 @@ const getProperties = async (req, res) => {
 
         if (isAvailable !== undefined) query.isAvailable = isAvailable === 'true';
         if (isFeatured !== undefined) query.isFeatured = isFeatured === 'true';
-        if (city) query['location.city'] = new RegExp(city, 'i');
-        if (state) query['location.state'] = new RegExp(state, 'i');
         if (type) query.type = type;
         if (sharingType) {
             query.sharingType = { $in: sharingType };
@@ -56,9 +52,13 @@ const getProperties = async (req, res) => {
 
         // Text search on title and description
         if (search) {
+            const regex = new RegExp(search, 'i');
             query.$or = [
-            { title: { $regex: search, $options: 'i' } },
-            { description: { $regex: search, $options: 'i' } }
+                { title: regex },
+                { description: regex },
+                { 'location.city': regex },
+                { 'location.state': regex },
+                { 'location.address': regex }
             ];
         }
 
