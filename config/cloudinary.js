@@ -180,4 +180,5 @@ module.exports = {
     deleteMultipleImages,
     extractPublicId,
     getOptimizedUrl,
+    bannerStorage,
 };

@@ -296,7 +296,7 @@ const deleteBanner = async (req, res) => {
             });
         }
 
-        // Extract public_id from Cloudinary URL and delete image
+        // Delete image from Cloudinary
         if (banner.image) {
             const publicId = banner.image.split('/').pop().split('.')[0];
             await cloudinary.uploader.destroy(`banners/${publicId}`);

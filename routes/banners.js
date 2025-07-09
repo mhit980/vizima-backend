@@ -16,8 +16,11 @@ const {
 
 const { protect } = require('../middleware/auth');
 const { adminOnly, managerOrAdmin } = require('../middleware/roleAuth');
-const { upload } = require('../middleware/upload');
+// const { upload } = require('../middleware/upload');
 const { validateBanner } = require('../middleware/validation');
+const multer = require('multer');
+const { bannerStorage } = require('../config/cloudinary');
+const upload = multer({ storage: bannerStorage })
 
 // Swagger documentation comments (keeping all your existing Swagger docs)
 /**
