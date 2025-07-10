@@ -31,7 +31,7 @@ const bookingSchema = new mongoose.Schema({
     },
     gender: {
         type: String,
-        enum: ['male', 'female', 'unisex'],
+        enum: ['male', 'female', 'others'],
         required: [true, 'Gender is required']
     },
     sharing: {

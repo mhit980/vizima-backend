@@ -136,7 +136,7 @@ const { adminOnly } = require('../middleware/roleAuth');
  *           description: Email address of the guest
  *         gender:
  *           type: string
- *           enum: [male, female, unisex]
+ *           enum: [male, female, others]
  *           description: Gender of the guest
  *         sharing:
  *           type: string
@@ -271,7 +271,7 @@ const { adminOnly } = require('../middleware/roleAuth');
  *           description: Email address of the guest
  *         gender:
  *           type: string
- *           enum: [male, female, unisex]
+ *           enum: [male, female, others]
  *           description: Gender of the guest
  *         sharing:
  *           type: string
