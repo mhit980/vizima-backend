@@ -307,10 +307,10 @@ const deleteBanner = async (req, res) => {
         //     await cloudinary.uploader.destroy(`banners/${publicId}`);
         // }
 
-        if (banner.image) {
-            const publicId = extractPublicId(banner.image);
-            await cloudinary.uploader.destroy(publicId);
-        }
+        // if (banner.image) {
+        //     const publicId = extractPublicId(banner.image);
+        //     await cloudinary.uploader.destroy(publicId);
+        // }
 
         await Banner.findByIdAndDelete(req.params.id);
 
