@@ -22,6 +22,15 @@ exports.getSettingsById = async (req, res) => {
     }
 };
 
+exports.getAllSettings = async (req, res) => {
+    try {
+        const settings = await SiteSettings.find();
+        res.status(200).json(settings);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 // Update settings by ID
 exports.updateSettingsById = async (req, res) => {
     try {

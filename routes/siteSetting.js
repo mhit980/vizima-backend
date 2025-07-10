@@ -67,6 +67,26 @@ router.get('/:id', controller.getSettingsById);
 
 /**
  * @swagger
+ * /api/settings:
+ *   get:
+ *     summary: Get all system settings
+ *     tags: [SystemSettings]
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/SystemSettings'
+ *       500:
+ *         description: Internal Server Error
+ */
+router.get('/', controller.getAllSettings);
+
+/**
+ * @swagger
  * /api/settings/{id}:
  *   put:
  *     summary: Update system settings by ID
