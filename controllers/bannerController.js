@@ -145,6 +145,7 @@ const createBanner = async (req, res) => {
         const {
             title,
             description,
+            image,
             link,
             isActive,
             order,
@@ -155,18 +156,20 @@ const createBanner = async (req, res) => {
             endDate
         } = req.body;
 
+        console.log(req.body);
+
         // Check if image was uploaded
-        if (!req.file) {
-            return res.status(400).json({
-                success: false,
-                message: 'Banner image is required'
-            });
-        }
+        // if (!req.file) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         message: 'Banner image is required'
+        //     });
+        // }
 
         const bannerData = {
             title,
             description,
-            image: req.file.path, // Cloudinary URL
+            image,
             link,
             isActive,
             order,
@@ -188,10 +191,10 @@ const createBanner = async (req, res) => {
         });
     } catch (error) {
         // Delete uploaded image if banner creation fails
-        if (req.file) {
-            const publicId = req.file.filename;
-            await cloudinary.uploader.destroy(publicId);
-        }
+        // if (req.file) {
+        //     const publicId = req.file.filename;
+        //     await cloudinary.uploader.destroy(publicId);
+        // }
 
         res.status(400).json({
             success: false,
@@ -218,6 +221,7 @@ const updateBanner = async (req, res) => {
         const {
             title,
             description,
+            image,
             link,
             isActive,
             order,
@@ -229,12 +233,13 @@ const updateBanner = async (req, res) => {
         } = req.body;
 
         // Store old image URL for cleanup
-        const oldImageUrl = banner.image;
+        // const oldImageUrl = banner.image;
 
         // Update fields
         const updateData = {
             title,
             description,
+            image,
             link,
             isActive,
             order,
@@ -257,10 +262,10 @@ const updateBanner = async (req, res) => {
         ).populate('createdBy', 'name email');
 
         // Delete old image from Cloudinary if new image was uploaded
-        if (req.file && oldImageUrl) {
-            const publicId = oldImageUrl.split('/').pop().split('.')[0];
-            await cloudinary.uploader.destroy(`banners/${publicId}`);
-        }
+        // if (image && oldImageUrl) {
+        //     const publicId = oldImageUrl.split('/').pop().split('.')[0];
+        //     await cloudinary.uploader.destroy(`banners/${publicId}`);
+        // }
 
         res.status(200).json({
             success: true,

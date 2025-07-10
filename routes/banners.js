@@ -415,6 +415,79 @@ router.post('/:id/click', recordClick);
  */
 router.put('/reorder', protect, adminOnly, reorderBanners);
 
+// /**
+//  * @swagger
+//  * /api/banners:
+//  *   post:
+//  *     summary: Create new banner (Admin only)
+//  *     tags: [Banners]
+//  *     security:
+//  *       - bearerAuth: []
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         multipart/form-data:
+//  *           schema:
+//  *             type: object
+//  *             required:
+//  *               - title
+//  *               - image
+//  *             properties:
+//  *               title:
+//  *                 type: string
+//  *                 maxLength: 100
+//  *               description:
+//  *                 type: string
+//  *                 maxLength: 500
+//  *               image:
+//  *                 type: string
+//  *                 format: string
+//  *               link:
+//  *                 type: string
+//  *               isActive:
+//  *                 type: boolean
+//  *               order:
+//  *                 type: number
+//  *               type:
+//  *                 type: string
+//  *                 enum: [hero, promotional, informational, featured]
+//  *               targetAudience:
+//  *                 type: string
+//  *                 enum: [all, new_users, existing_users, premium_users]
+//  *               displayLocation:
+//  *                 type: array
+//  *                 items:
+//  *                   type: string
+//  *                   enum: [home, search, property_detail, booking, profile]
+//  *               startDate:
+//  *                 type: string
+//  *                 format: date-time
+//  *               endDate:
+//  *                 type: string
+//  *                 format: date-time
+//  *     responses:
+//  *       201:
+//  *         description: Banner created successfully
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               type: object
+//  *               properties:
+//  *                 success:
+//  *                   type: boolean
+//  *                 data:
+//  *                   $ref: '#/components/schemas/Banner'
+//  *                 message:
+//  *                   type: string
+//  *       400:
+//  *         description: Validation error
+//  *       401:
+//  *         description: Unauthorized
+//  *       403:
+//  *         description: Forbidden - Admin access required
+//  */
+// router.post('/', protect, adminOnly, createBanner);
+
 /**
  * @swagger
  * /api/banners:
@@ -426,7 +499,7 @@ router.put('/reorder', protect, adminOnly, reorderBanners);
  *     requestBody:
  *       required: true
  *       content:
- *         multipart/form-data:
+ *         application/json:
  *           schema:
  *             type: object
  *             required:
@@ -441,7 +514,7 @@ router.put('/reorder', protect, adminOnly, reorderBanners);
  *                 maxLength: 500
  *               image:
  *                 type: string
- *                 format: binary
+ *                 format: uri
  *               link:
  *                 type: string
  *               isActive:
@@ -486,7 +559,8 @@ router.put('/reorder', protect, adminOnly, reorderBanners);
  *       403:
  *         description: Forbidden - Admin access required
  */
-router.post('/', protect, adminOnly, upload.single('image'), validateBanner, createBanner);
+router.post('/', protect, adminOnly, createBanner);
+
 
 /**
  * @swagger
@@ -506,7 +580,7 @@ router.post('/', protect, adminOnly, upload.single('image'), validateBanner, cre
  *     requestBody:
  *       required: true
  *       content:
- *         multipart/form-data:
+ *         application/json:
  *           schema:
  *             type: object
  *             properties:
@@ -518,7 +592,7 @@ router.post('/', protect, adminOnly, upload.single('image'), validateBanner, cre
  *                 maxLength: 500
  *               image:
  *                 type: string
- *                 format: binary
+ *                 format: string
  *               link:
  *                 type: string
  *               isActive:
@@ -537,6 +611,9 @@ router.post('/', protect, adminOnly, upload.single('image'), validateBanner, cre
  *                   type: string
  *                   enum: [home, search, property_detail, booking, profile]
  *               startDate:
+ *                 type: string
+ *                 format: date-time
+ *               endDate:
  *                 type: string
  *                 format: date-time
  *     responses:
@@ -562,7 +639,7 @@ router.post('/', protect, adminOnly, upload.single('image'), validateBanner, cre
  *       404:
  *         description: Banner not found
  */
-router.put('/:id', protect, adminOnly, upload.single('image'), validateBanner, updateBanner);
+router.put('/:id', protect, adminOnly, updateBanner);
 
 /**
  * @swagger
