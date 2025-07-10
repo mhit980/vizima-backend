@@ -32,11 +32,11 @@ exports.createCity = async (req, res) => {
 
 exports.getAllCities = async (req, res) => {
     try {
-        const { page = 1, limit = 3 } = req.query;
+        const { page, limit } = req.query;
         const pageNum = parseInt(page, 10);
         const limitNum = parseInt(limit, 10);
 
-        const total = await City.countDocuments();
+        const total = await City.countDocuments({ isVisible: true });
         const cities = await City.find({ isVisible: true })
             .sort({ order: 1 })
             .skip((pageNum - 1) * limitNum)
