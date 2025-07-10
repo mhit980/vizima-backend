@@ -20,7 +20,7 @@ exports.getAllTestimonials = async (req, res) => {
             .skip(skip)
             .limit(limit);
 
-        const total = await Testimonial.countDocuments();
+        const total = await Testimonial.countDocuments({ status: 'approved'});
         res.status(200).json({
             page,
             limit,

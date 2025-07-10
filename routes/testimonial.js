@@ -45,6 +45,7 @@ router.post('/', controller.createTestimonial);
  *     parameters:
  *       - in: query
  *         name: page
+ *         default: 1
  *         schema: { type: number }
  *       - in: query
  *         name: limit
