@@ -1,5 +1,5 @@
 const Banner = require('../models/Banner');
-const cloudinary = require('../config/cloudinary');
+const {cloudinary, extractPublicId} = require('../config/cloudinary');
 const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
@@ -297,9 +297,14 @@ const deleteBanner = async (req, res) => {
         }
 
         // Delete image from Cloudinary
+        // if (banner.image) {
+        //     const publicId = banner.image.split('/').pop().split('.')[0];
+        //     await cloudinary.uploader.destroy(`banners/${publicId}`);
+        // }
+
         if (banner.image) {
-            const publicId = banner.image.split('/').pop().split('.')[0];
-            await cloudinary.uploader.destroy(`banners/${publicId}`);
+            const publicId = extractPublicId(banner.image);
+            await cloudinary.uploader.destroy(publicId);
         }
 
         await Banner.findByIdAndDelete(req.params.id);

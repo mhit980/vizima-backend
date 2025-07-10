@@ -178,7 +178,8 @@ module.exports = {
     avatarUpload,
     deleteImage,
     deleteMultipleImages,
-    extractPublicId,
+    // extractPublicId,
     getOptimizedUrl,
     bannerStorage,
+    extractPublicId,
 };
