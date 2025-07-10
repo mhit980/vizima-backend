@@ -26,6 +26,7 @@ const roomOptionRoutes = require("./routes/roomOptions");
 const serviceHighlightRoutes = require("./routes/serviceHighlight");
 const blogRoutes = require("./routes/blog");
 const userDocumentsRoutes = require("./routes/userDocuments");
+const siteSettingsRoutes = require("./routes/siteSetting")
 
 const app = express();
 
@@ -107,6 +108,7 @@ app.use("/api/room-options", roomOptionRoutes);
 app.use("/api/service-highlights", serviceHighlightRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/user-documents", userDocumentsRoutes);
+app.use("/api/settings", siteSettingsRoutes)
 
 
 // Health check endpoint
