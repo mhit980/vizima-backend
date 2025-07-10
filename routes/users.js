@@ -437,7 +437,7 @@ router.get('/:id', protect, admin, getUserById);
  *       404:
  *         description: User not found
  */
-router.put('/edit-profile', protect, user, editUserProfile);
+router.put('/edit-profile', protect, editUserProfile);
 
 /**
  * @swagger
