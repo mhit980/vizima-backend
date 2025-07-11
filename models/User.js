@@ -11,8 +11,8 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: false,
-        unique: true,
-        sparse: true,
+        // unique: true,
+        // sparse: true,
         lowercase: true,
         match: [
             /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
@@ -124,7 +124,8 @@ const userSchema = new mongoose.Schema({
 });
 
 // Index for faster queries
-// userSchema.index({ email: 1 });
+userSchema.index({ email: 1 }, { unique: true, sparse: true });
+
 userSchema.index({ role: 1 });
 
 // Hash password before saving
