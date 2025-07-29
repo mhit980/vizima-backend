@@ -28,6 +28,11 @@ const propertySchema = new mongoose.Schema({
             message: 'Please select a valid gender'
         }
     },
+    phone: {
+        type: String,
+        required: [false, 'Phone number is required'],
+        match: [/^(\+\d{1,4})?\d{10}$/, 'Please enter a valid phone number with country code (e.g. +911234567890)']
+    },
     bulkAccommodation: {
         type: Boolean,
         default: false,

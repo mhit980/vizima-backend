@@ -171,6 +171,10 @@ const router = express.Router();
  *         updatedAt:
  *           type: string
  *           format: date-time
+ *         phone:
+ *           type: string
+ *           description: Owner or property contact phone number
+ *           example: "+911234567890"
  *     
  *     PropertyResponse:
  *       type: object
@@ -183,6 +187,10 @@ const router = express.Router();
  *           properties:
  *             property:
  *               $ref: '#/components/schemas/Property'
+ *             phone:
+ *               type: string
+ *               description: Owner or property contact phone number
+ *               example: "+911234567890"
  *     
  *     PropertiesResponse:
  *       type: object
@@ -215,6 +223,10 @@ const router = express.Router();
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Property'
+ *             phone:
+ *               type: string
+ *               description: Owner or property contact phone number
+ *               example: "+911234567890"
  *     
  *     PropertyStats:
  *       type: object
@@ -240,6 +252,10 @@ const router = express.Router();
  *                 totalViews:
  *                   type: number
  *                   example: 2500
+ *                 phone:
+ *                   type: string
+ *                   description: Owner or property contact phone number
+ *                   example: "+911234567890"
  *             byType:
  *               type: array
  *               items:
@@ -396,7 +412,7 @@ const createPropertyValidation = [
         .optional()
         .isIn(['interns', 'employees', 'students'])
         .withMessage('Invalid bulkAccommodationType value'),
-    
+
     body('microSiteLink')
         .optional()
         .isURL()
@@ -613,6 +629,10 @@ router.get('/', getProperties);
  *                       type: array
  *                       items:
  *                         $ref: '#/components/schemas/Property'
+ *                     phone:
+ *                       type: string
+ *                       description: Owner or property contact phone number
+ *                       example: "+911234567890"
  *       500:
  *         description: Server error
  *         content:
@@ -720,6 +740,10 @@ router.get('/stats', protect, authorize('admin'), getPropertyStats);
  *                       type: array
  *                       items:
  *                         $ref: '#/components/schemas/Property'
+ *                     phone:
+ *                       type: string
+ *                       description: Owner or property contact phone number
+ *                       example: "+911234567890"
  *       400:
  *         description: Missing or invalid coordinates
  *         content:
@@ -785,6 +809,10 @@ router.get('/search/location', searchByLocation);
  *                       title:
  *                         type: string
  *                         example: "Luxury 2BHK Apartment in Downtown"
+ *                       phone:
+ *                         type: string
+ *                         description: Owner or property contact phone number
+ *                         example: "+911234567890"
  *       500:
  *         description: Internal server error
  */
@@ -869,6 +897,10 @@ router.get('/:id', param('id').isMongoId().withMessage('Invalid property ID'), g
  *                       type: array
  *                       items:
  *                         $ref: '#/components/schemas/Property'
+ *                     phone:
+ *                       type: string
+ *                       description: Owner or property contact phone number
+ *                       example: "+911234567890"
  *       404:
  *         description: Property not found
  *         content:
@@ -1029,6 +1061,10 @@ router.get('/:id/similar', param('id').isMongoId().withMessage('Invalid property
  *                 type: string
  *                 description: Link to microSite
  *                 example: "https://example.com/microsite"
+ *               phone:
+ *                 type: string
+ *                 description: Owner or property contact phone number
+ *                 example: "+911234567890"
  *     responses:
  *       201:
  *         description: Property created successfully
@@ -1048,6 +1084,10 @@ router.get('/:id/similar', param('id').isMongoId().withMessage('Invalid property
  *                   properties:
  *                     property:
  *                       $ref: '#/components/schemas/Property'
+ *                     phone:
+ *                       type: string
+ *                       description: Owner or property contact phone number
+ *                       example: "+911234567890"
  *       400:
  *         description: Validation error
  *         content:
@@ -1233,6 +1273,10 @@ router.post('/', protect, authorize('admin'), createPropertyValidation, createPr
  *                type: string
  *                description: Link to microSite
  *                example: "https://example.com/microsite"
+ *               phone:
+ *                 type: string
+ *                 description: Owner or property contact phone number
+ *                 example: "+911234567890"
  *     responses:
  *       200:
  *         description: Property updated successfully
@@ -1252,6 +1296,10 @@ router.post('/', protect, authorize('admin'), createPropertyValidation, createPr
  *                   properties:
  *                     property:
  *                       $ref: '#/components/schemas/Property'
+ *                     phone:
+ *                       type: string
+ *                       description: Owner or property contact phone number
+ *                       example: "+911234567890"
  *       400:
  *         description: Validation error
  *         content:
