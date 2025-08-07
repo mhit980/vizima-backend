@@ -21,14 +21,15 @@ const getProperties = async (req, res) => {
             sharingType,
             sortBy = 'createdAt',
             sortOrder = 'desc',
-            isAvailable = true,
+            isAvailable,
             isFeatured
         } = req.query;
 
         // Build query
         const query = {};
 
-        if (isAvailable !== undefined) query.isAvailable = isAvailable === 'true';
+        // if (isAvailable !== undefined) query.isAvailable = isAvailable === 'true';
+        if (isAvailable) query.isAvailable = isAvailable;
         if (isFeatured !== undefined) query.isFeatured = isFeatured === 'true';
         if (type) query.type = type;
         if (sharingType) {
