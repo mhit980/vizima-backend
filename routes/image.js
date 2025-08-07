@@ -37,8 +37,6 @@ const {
  *                   type: boolean
  *                 message:
  *                   type: string
- *                 result:
- *                   type: object
  *       500:
  *         description: Error deleting image
  */
