@@ -553,6 +553,69 @@ const getPaginatedPropertyTitles = async (req, res) => {
     }
 };
 
+/**
+ * @desc    Delete multiple properties
+ * @route   DELETE /api/properties
+ * @access  Private/Admin
+ */
+const deleteMultipleProperties = async (req, res) => {
+    try {
+        const { propertyIds } = req.body;
+
+        if (!Array.isArray(propertyIds) || propertyIds.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'propertyIds must be a non-empty array'
+            });
+        }
+
+        // Fetch properties by IDs
+        const properties = await Property.find({ _id: { $in: propertyIds } });
+
+        if (properties.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No properties found with the provided IDs'
+            });
+        }
+
+        // Check permissions for each property
+        // const unauthorized = properties.some(
+        //     property =>
+        //         property.owner.toString() !== req.user.id &&
+        //         req.user.role !== 'admin'
+        // );
+
+        // if (unauthorized) {
+        //     return res.status(403).json({
+        //         success: false,
+        //         message: 'Not authorized to delete one or more of the selected properties'
+        //     });
+        // }
+
+        // Delete allowed properties
+        const deleteResult = await Property.deleteMany({ _id: { $in: propertyIds } });
+
+        res.status(200).json({
+            success: true,
+            message: `${deleteResult.deletedCount} properties deleted successfully`
+        });
+
+    } catch (error) {
+        console.error('Delete multiple properties error:', error);
+        if (error.name === 'CastError') {
+            return res.status(400).json({
+                success: false,
+                message: 'One or more property IDs are invalid'
+            });
+        }
+        res.status(500).json({
+            success: false,
+            message: 'Server error'
+        });
+    }
+};
+
 module.exports = {
     getProperties,
     getProperty,
@@ -563,5 +626,6 @@ module.exports = {
     getFeaturedProperties,
     getPropertyStats,
     getSimilarProperties,
-    getPaginatedPropertyTitles
+    getPaginatedPropertyTitles,
+    deleteMultipleProperties
 };

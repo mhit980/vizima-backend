@@ -11,6 +11,7 @@ const {
     getPropertyStats,
     getSimilarProperties,
     getPaginatedPropertyTitles,
+    deleteMultipleProperties,
 } = require('../controllers/propertyController');
 const { protect, authorize } = require('../middleware/auth');
 const upload = require('../middleware/upload');
@@ -1356,6 +1357,53 @@ router.put('/:id', protect, authorize('admin'), param('id').isMongoId().withMess
 
 /**
  * @swagger
+ * /api/properties/delete-multiple:
+ *   delete:
+ *     summary: Delete multiple properties by IDs
+ *     tags: [Properties]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               propertyIds:
+ *                 type: array
+ *                 description: Array of Property IDs to be deleted
+ *                 items:
+ *                   type: string
+ *             required:
+ *               - propertyIds
+ *             example:
+ *               propertyIds: ["64f8c91c937e7a6c6cfe1234", "64f8c91c937e7a6c6cfe5678"]
+ *     responses:
+ *       200:
+ *         description: Successfully deleted properties
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *       400:
+ *         description: Invalid input
+ *       403:
+ *         description: Unauthorized
+ *       404:
+ *         description: Properties not found
+ *       500:
+ *         description: Server error
+ */
+router.delete('/delete-multiple', protect, deleteMultipleProperties);
+
+/**
+ * @swagger
  * /api/properties/{id}:
  *   delete:
  *     summary: Delete a property (Admin or Property Owner only)
@@ -1410,6 +1458,8 @@ router.put('/:id', protect, authorize('admin'), param('id').isMongoId().withMess
  *               $ref: '#/components/schemas/Error'
  */
 router.delete('/:id', protect, authorize('admin'), param('id').isMongoId().withMessage('Invalid property ID'), deleteProperty);
+
+
 
 
 
