@@ -188,7 +188,6 @@ propertySchema.virtual('roomOptions', {
     foreignField: 'property'
 });
 
-
 // Indexes for better search performance
 propertySchema.index({ 'location.coordinates': '2dsphere' });
 

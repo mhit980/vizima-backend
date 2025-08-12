@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const {
-    deleteImage,
+    // deleteImage,
     deleteMultipleImages,
+    deleteImageFromUrl,
 } = require('../controllers/imageController');
 
 /**
@@ -14,17 +15,21 @@ const {
 
 /**
  * @swagger
- * /api/images/{publicId}:
+ * /api/images:
  *   delete:
- *     summary: Delete a single image by public ID
+ *     summary: Delete a single image from Cloudinary by URL
  *     tags: [Images]
- *     parameters:
- *       - in: path
- *         name: publicId
- *         required: true
- *         schema:
- *           type: string
- *         description: Public ID of the image on Cloudinary
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               imageUrl:
+ *                 type: string
+ *                 example: "https://res.cloudinary.com/demo/image/upload/v1754543796/folder/myimage.jpg"
+ *                 description: The full Cloudinary image URL
  *     responses:
  *       200:
  *         description: Image deleted successfully
@@ -37,16 +42,18 @@ const {
  *                   type: boolean
  *                 message:
  *                   type: string
+ *       400:
+ *         description: Invalid Cloudinary URL
  *       500:
  *         description: Error deleting image
  */
-router.delete('/:publicId', deleteImage);
+router.delete('/', deleteImageFromUrl);
 
 /**
  * @swagger
- * /api/images:
+ * /api/images/delete-multiple:
  *   delete:
- *     summary: Delete multiple images by public IDs
+ *     summary: Delete multiple images from Cloudinary by URLs
  *     tags: [Images]
  *     requestBody:
  *       required: true
@@ -54,35 +61,24 @@ router.delete('/:publicId', deleteImage);
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - urls
  *             properties:
- *               publicIds:
+ *               urls:
  *                 type: array
- *                 description: Array of Cloudinary public IDs
  *                 items:
  *                   type: string
- *             required:
- *               - publicIds
- *             example:
- *               publicIds: ["image1_public_id", "image2_public_id"]
+ *                 example:
+ *                   - "https://res.cloudinary.com/demo/image/upload/v1698765432/folder/image1.jpg"
+ *                   - "https://res.cloudinary.com/demo/image/upload/v1698765432/image2.jpg"
  *     responses:
  *       200:
  *         description: Images deleted successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 result:
- *                   type: object
  *       400:
- *         description: Invalid request
+ *         description: Invalid input
  *       500:
- *         description: Error deleting images
+ *         description: Failed to delete images
  */
-router.delete('/', deleteMultipleImages);
+router.delete('/delete-multiple', deleteMultipleImages);
 
 module.exports = router;
