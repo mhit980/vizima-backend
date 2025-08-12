@@ -41,7 +41,7 @@ const propertySchema = new mongoose.Schema({
     bulkAccommodationType: {
         type: [String],
         enum: {
-            values: ['interns', 'employees', 'students'],
+            values: ['interns', 'employees', 'students', 'managed_accommodation'],
             message: 'Invalid bulk accommodation type'
         },
         required: false,

@@ -411,7 +411,7 @@ const createPropertyValidation = [
 
     body('bulkAccommodationType.*')
         .optional()
-        .isIn(['interns', 'employees', 'students'])
+        .isIn(['interns', 'employees', 'students', 'managed_accommodation'])
         .withMessage('Invalid bulkAccommodationType value'),
 
     body('microSiteLink')
@@ -965,8 +965,8 @@ router.get('/:id/similar', param('id').isMongoId().withMessage('Invalid property
  *                 required: false
  *               bulkAccommodationType:
  *                 type: [string]
- *                 enum: [interns, employees, students ]
- *                 example: ["interns", "employees", "students"]
+ *                 enum: [interns, employees, students, managed_accommodation ]
+ *                 example: ["interns", "employees", "students", "managed_accommodation"]
  *                 required: false
  *                 default: []
  *               sharingType:
@@ -1183,7 +1183,7 @@ router.post('/', protect, authorize('admin'), createPropertyValidation, createPr
  *                 required: false
  *               bulkAccommodationType:
  *                 type: [string]
- *                 enum: [interns, employees, students ]
+ *                 enum: [interns, employees, students, managed_accommodation ]
  *                 example: "interns"
  *                 required: false
  *                 default: []
