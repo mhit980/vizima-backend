@@ -1,5 +1,6 @@
 const Property = require('../models/Property');
 const { validationResult } = require('express-validator');
+const { deleteMultipleImages } = require('./imageController');
 
 /**
  * @desc    Get all properties with filters and pagination
@@ -263,6 +264,16 @@ const deleteProperty = async (req, res) => {
                 success: false,
                 message: 'Not authorized to delete this property'
             });
+        }
+
+        if (Array.isArray(property.images) && property.images.length > 0) {
+
+            await deleteMultipleImages(
+                { body: { urls: property.images } },
+                {
+                    status: () => ({ json: () => {} })
+                }
+            )
         }
 
         await Property.findByIdAndDelete(req.params.id);
