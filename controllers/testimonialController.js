@@ -11,20 +11,11 @@ exports.createTestimonial = async (req, res) => {
 
 exports.getAllTestimonials = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 3;
-        const skip = (page - 1) * limit;
-
         const testimonials = await Testimonial.find({ status: 'approved' })
-            .sort({ order: 1 })
-            .skip(skip)
-            .limit(limit);
+            .sort({ order: 1 });
 
-        const total = await Testimonial.countDocuments({ status: 'approved'});
         res.status(200).json({
-            page,
-            limit,
-            total,
+            total: testimonials.length,
             data: testimonials
         });
     } catch (err) {

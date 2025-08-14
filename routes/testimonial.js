@@ -40,19 +40,11 @@ router.post('/', controller.createTestimonial);
  * @swagger
  * /api/testimonials:
  *   get:
- *     summary: Get all testimonials in order
+ *     summary: Get all approved testimonials in order
  *     tags: [Testimonials]
- *     parameters:
- *       - in: query
- *         name: page
- *         default: 1
- *         schema: { type: number }
- *       - in: query
- *         name: limit
- *         schema: { type: number, default: 6 }
  *     responses:
  *       200:
- *         description: List of testimonials
+ *         description: List of all approved testimonials
  */
 router.get('/', controller.getAllTestimonials);
 
