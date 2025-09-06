@@ -92,7 +92,7 @@ const router = express.Router();
  *           type: array
  *           items:
  *             type: string
- *             enum: [wifi, parking, gym, pool, laundry, ac, heating, kitchen, balcony, garden, security, elevator, pets, furnished, tv, dishwasher, microwave, refrigerator]
+ *             enum: [wifi, parking, gym, daily_cleaning, laundry, ac, heating, kitchen, balcony, garden, security, elevator, power_backup, furnished, tv, transportation, microwave, refrigerator]
  *           example: ["wifi", "parking", "ac", "furnished"]
  *         images:
  *           type: array
@@ -360,7 +360,7 @@ const createPropertyValidation = [
         .withMessage('Amenities must be an array'),
     body('amenities.*')
         .optional()
-        .isIn(['wifi', 'parking', 'gym', 'pool', 'laundry', 'ac', 'heating', 'kitchen', 'balcony', 'garden', 'security', 'elevator', 'pets', 'furnished', 'tv', 'dishwasher', 'microwave', 'refrigerator'])
+        .isIn(['wifi', 'parking', 'gym', 'daily_cleaning', 'laundry', 'ac', 'heating', 'kitchen', 'balcony', 'garden', 'security', 'elevator', 'power_backup', 'furnished', 'tv', 'transportation', 'microwave', 'refrigerator'])
         .withMessage('Invalid amenity'),
     body('images')
         .isArray({ min: 1 })
@@ -510,7 +510,7 @@ const updatePropertyValidation = [
  *         name: sharingType
  *         schema:
  *           type: [string]
- *           enum: [single, double, triple]
+ *           enum: [single, double, triple, quadruple]
  *         description: Filter by sharing type
  *       - in: query
  *         name: minPrice
@@ -971,8 +971,8 @@ router.get('/:id/similar', param('id').isMongoId().withMessage('Invalid property
  *                 default: []
  *               sharingType:
  *                 type: [string]
- *                 enum: [single, double, triple]
- *                 example: ["single", "double", "triple"]
+ *                 enum: [single, double, triple, quadruple]
+ *                 example: ["single", "double", "triple", "quadruple"]
  *                 required: false
  *                 default: []
  *               price:
@@ -1012,7 +1012,7 @@ router.get('/:id/similar', param('id').isMongoId().withMessage('Invalid property
  *                 type: array
  *                 items:
  *                   type: string
- *                   enum: [wifi, parking, gym, pool, laundry, ac, heating, kitchen, balcony, garden, security, elevator, pets, furnished, tv, dishwasher, microwave, refrigerator]
+ *                   enum: [wifi, parking, gym, daily_cleaning, laundry, ac, heating, kitchen, balcony, garden, security, elevator, power_backup, furnished, tv, transportation, microwave, refrigerator]
  *                 example: ["wifi", "parking", "ac", "furnished"]
  *               images:
  *                 type: array
@@ -1189,8 +1189,8 @@ router.post('/', protect, authorize('admin'), createPropertyValidation, createPr
  *                 default: []
  *               sharingType:
  *                 type: [string]
- *                 enum: [single, double, triple]
- *                 example: ["single", "double", "triple"]
+ *                 enum: [single, double, triple, quadruple]
+ *                 example: ["single", "double", "triple", "quadruple"]
  *                 required: false
  *                 default: []
  *               price:
@@ -1225,7 +1225,7 @@ router.post('/', protect, authorize('admin'), createPropertyValidation, createPr
  *                 type: array
  *                 items:
  *                   type: string
- *                   enum: [wifi, parking, gym, pool, laundry, ac, heating, kitchen, balcony, garden, security, elevator, pets, furnished, tv, dishwasher, microwave, refrigerator]
+ *                   enum: [wifi, parking, gym, daily_cleaning, laundry, ac, heating, kitchen, balcony, garden, security, elevator, power_backup, furnished, tv, transportation, microwave, refrigerator]
  *                 example: ["wifi", "parking", "ac", "furnished", "gym"]
  *               images:
  *                 type: array

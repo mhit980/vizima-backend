@@ -49,7 +49,7 @@ const propertySchema = new mongoose.Schema({
     },
     sharingType: {
         type: [String],
-        enum: ['single', 'double', 'triple'],
+        enum: ['single', 'double', 'triple', 'quadruple'],
         required: false,
         default: []
     },
@@ -83,9 +83,9 @@ const propertySchema = new mongoose.Schema({
     amenities: [{
         type: String,
         enum: [
-            'wifi', 'parking', 'gym', 'pool', 'laundry', 'ac', 'heating',
-            'kitchen', 'balcony', 'garden', 'security', 'elevator', 'pets',
-            'furnished', 'tv', 'dishwasher', 'microwave', 'refrigerator'
+            'wifi', 'parking', 'gym', 'daily_cleaning', 'laundry', 'ac', 'heating',
+            'kitchen', 'balcony', 'garden', 'security', 'elevator', 'power_backup',
+            'furnished', 'tv', 'transportation', 'microwave', 'refrigerator'
         ]
     }],
     images: [{
