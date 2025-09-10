@@ -140,7 +140,7 @@ const { adminOnly } = require('../middleware/roleAuth');
  *           description: Gender of the guest
  *         sharing:
  *           type: string
- *           enum: [single, double, triple]
+ *           enum: [single, double, triple, quadruple]
  *           description: Sharing type preference
  *         scheduleDate:
  *           type: string
@@ -275,7 +275,7 @@ const { adminOnly } = require('../middleware/roleAuth');
  *           description: Gender of the guest
  *         sharing:
  *           type: string
- *           enum: [single, double, triple]
+ *           enum: [single, double, triple, quadruple]
  *           description: Sharing type preference
  *         scheduleDate:
  *           type: string

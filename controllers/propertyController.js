@@ -34,7 +34,7 @@ const getProperties = async (req, res) => {
         if (isFeatured !== undefined) query.isFeatured = isFeatured === 'true';
         if (type) query.type = type;
         if (sharingType) {
-            query.sharingType = { $in: sharingType };
+            query['sharingType.type'] = { $in: sharingType };
         }
         if (bedrooms) query.bedrooms = parseInt(bedrooms);
         if (bathrooms) query.bathrooms = parseInt(bathrooms);

@@ -36,7 +36,7 @@ const bookingSchema = new mongoose.Schema({
     },
     sharing: {
         type: String,
-        enum: ['single', 'double', 'triple'],
+        enum: ['single', 'double', 'triple', 'quadruple'],
         required: [true, 'Sharing type is required']
     },
     scheduleDate: {

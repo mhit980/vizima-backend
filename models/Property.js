@@ -47,11 +47,22 @@ const propertySchema = new mongoose.Schema({
         required: false,
         default: []
     },
-    sharingType: {
-        type: [String],
-        enum: ['single', 'double', 'triple', 'quadruple'],
-        required: false,
-        default: []
+    sharingType: [
+        {
+            type: {
+                type: String,
+                enum: ['single', 'double', 'triple', 'quadruple'],
+                required: true
+            },
+            price: {
+                type: Number,
+                required: true
+            }
+        }
+    ],
+    youtubeLink: {
+        type: String,
+        required: [true, 'Youtube link is required']
     },
     price: {
         type: Number,

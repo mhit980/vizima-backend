@@ -35,6 +35,7 @@ const router = express.Router();
  *         - bathrooms
  *         - area
  *         - owner
+ *         - youtubeLink
  *       properties:
  *         _id:
  *           type: string
@@ -162,6 +163,24 @@ const router = express.Router();
  *                 type: string
  *                 enum: [hospital, school, mall, restaurant, transport, other]
  *                 example: "hospital"
+ *         sharingType:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               type:
+ *                 type: string
+ *                 enum: [single, double, triple, quadruple]
+ *                 example: "single"
+ *               price:
+ *                 type: number
+ *                 minimum: 0
+ *                 example: 15000
+ *           example: [{"type": "single", "price": 15000}, {"type": "double", "price": 12000}]
+ *         youtubeLink:
+ *           type: string
+ *           description: YouTube video link for property tour
+ *           example: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
  *         microSiteLink:
  *           type: string
  *           description: Link to microSite
@@ -419,6 +438,25 @@ const createPropertyValidation = [
         .isURL()
         .withMessage('microSiteLink must be a valid URL'),
 
+    body('sharingType')
+        .optional()
+        .isArray()
+        .withMessage('Sharing type must be an array'),
+    
+    body('sharingType.*.type')
+        .optional()
+        .isIn(['single', 'double', 'triple', 'quadruple'])
+        .withMessage('Invalid sharing type'),
+    
+    body('sharingType.*.price')
+        .optional()
+        .isFloat({ min: 0 })
+        .withMessage('Sharing type price must be a positive number'),
+    
+    body('youtubeLink')
+        .isURL()
+        .withMessage('YouTube link must be a valid URL')
+
 ];
 
 const updatePropertyValidation = [
@@ -475,7 +513,27 @@ const updatePropertyValidation = [
     body('microSiteLink')
         .optional()
         .isURL()
-        .withMessage('microSiteLink must be a valid URL')
+        .withMessage('microSiteLink must be a valid URL'),
+    
+    body('sharingType')
+        .optional()
+        .isArray()
+        .withMessage('Sharing type must be an array'),
+    
+    body('sharingType.*.type')
+        .optional()
+        .isIn(['single', 'double', 'triple', 'quadruple'])
+        .withMessage('Invalid sharing type'),
+    
+    body('sharingType.*.price')
+        .optional()
+        .isFloat({ min: 0 })
+        .withMessage('Sharing type price must be a positive number'),
+    
+    body('youtubeLink')
+        .optional()
+        .isURL()
+        .withMessage('YouTube link must be a valid URL')
 ];
 
 /**
@@ -941,6 +999,7 @@ router.get('/:id/similar', param('id').isMongoId().withMessage('Invalid property
  *               - bedrooms
  *               - bathrooms
  *               - area
+ *               - youtubeLink
  *             properties:
  *               title:
  *                 type: string
@@ -970,11 +1029,24 @@ router.get('/:id/similar', param('id').isMongoId().withMessage('Invalid property
  *                 required: false
  *                 default: []
  *               sharingType:
- *                 type: [string]
- *                 enum: [single, double, triple, quadruple]
- *                 example: ["single", "double", "triple", "quadruple"]
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     type:
+ *                       type: string
+ *                       enum: [single, double, triple, quadruple]
+ *                       example: "single"
+ *                     price:
+ *                       type: number
+ *                       minimum: 0
+ *                       example: 15000
+ *                 example: [{"type": "single", "price": 15000}, {"type": "double", "price": 12000}]
  *                 required: false
- *                 default: []
+ *               youtubeLink:
+ *                 type: string
+ *                 description: YouTube video link for property tour
+ *                 example: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
  *               price:
  *                 type: number
  *                 minimum: 0
@@ -1188,11 +1260,24 @@ router.post('/', protect, authorize('admin'), createPropertyValidation, createPr
  *                 required: false
  *                 default: []
  *               sharingType:
- *                 type: [string]
- *                 enum: [single, double, triple, quadruple]
- *                 example: ["single", "double", "triple", "quadruple"]
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     type:
+ *                       type: string
+ *                       enum: [single, double, triple, quadruple]
+ *                       example: "single"
+ *                     price:
+ *                       type: number
+ *                       minimum: 0
+ *                       example: 15000
+ *                 example: [{"type": "single", "price": 15000}, {"type": "double", "price": 12000}]
  *                 required: false
- *                 default: []
+ *               youtubeLink:
+ *                 type: string
+ *                 description: YouTube video link for property tour
+ *                 example: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
  *               price:
  *                 type: number
  *                 minimum: 0
