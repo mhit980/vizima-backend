@@ -28,11 +28,8 @@ const router = express.Router();
  *         - title
  *         - description
  *         - type
- *         - price
  *         - location
  *         - images
- *         - bedrooms
- *         - bathrooms
  *         - area
  *         - owner
  *         - youtubeLink
@@ -55,11 +52,6 @@ const router = express.Router();
  *           enum: [apartment, house, room, studio, villa, penthouse]
  *           description: Property type
  *           example: "apartment"
- *         price:
- *           type: number
- *           minimum: 0
- *           description: Property price per month
- *           example: 25000
  *         location:
  *           type: object
  *           required:
@@ -101,14 +93,6 @@ const router = express.Router();
  *             type: string
  *           description: Array of image URLs
  *           example: ["https://example.com/image1.jpg", "https://example.com/image2.jpg"]
- *         bedrooms:
- *           type: number
- *           minimum: 0
- *           example: 2
- *         bathrooms:
- *           type: number
- *           minimum: 0
- *           example: 2
  *         area:
  *           type: number
  *           minimum: 1
@@ -346,9 +330,6 @@ const createPropertyValidation = [
     body('type')
         .isIn(['apartment', 'house', 'room', 'studio', 'villa', 'penthouse', 'pg', 'hostel'])
         .withMessage('Please select a valid property type'),
-    body('price')
-        .isFloat({ min: 0 })
-        .withMessage('Price must be a positive number'),
     body('location.address')
         .trim()
         .notEmpty()
@@ -387,12 +368,6 @@ const createPropertyValidation = [
     body('images.*')
         .isURL()
         .withMessage('Each image must be a valid URL'),
-    body('bedrooms')
-        .isInt({ min: 0 })
-        .withMessage('Bedrooms must be a non-negative number'),
-    body('bathrooms')
-        .isInt({ min: 0 })
-        .withMessage('Bathrooms must be a non-negative number'),
     body('area')
         .isFloat({ min: 1 })
         .withMessage('Area must be at least 1 square foot'),
@@ -442,21 +417,20 @@ const createPropertyValidation = [
         .optional()
         .isArray()
         .withMessage('Sharing type must be an array'),
-    
+
     body('sharingType.*.type')
         .optional()
         .isIn(['single', 'double', 'triple', 'quadruple'])
         .withMessage('Invalid sharing type'),
-    
+
     body('sharingType.*.price')
         .optional()
         .isFloat({ min: 0 })
         .withMessage('Sharing type price must be a positive number'),
-    
+
     body('youtubeLink')
         .isURL()
         .withMessage('YouTube link must be a valid URL')
-
 ];
 
 const updatePropertyValidation = [
@@ -474,10 +448,6 @@ const updatePropertyValidation = [
         .optional()
         .isIn(['apartment', 'house', 'room', 'studio', 'villa', 'penthouse', 'pg', 'hostel'])
         .withMessage('Please select a valid property type'),
-    body('price')
-        .optional()
-        .isFloat({ min: 0 })
-        .withMessage('Price must be a positive number'),
     body('location.address')
         .optional()
         .trim()
@@ -498,14 +468,6 @@ const updatePropertyValidation = [
         .trim()
         .notEmpty()
         .withMessage('Zip code cannot be empty'),
-    body('bedrooms')
-        .optional()
-        .isInt({ min: 0 })
-        .withMessage('Bedrooms must be a non-negative number'),
-    body('bathrooms')
-        .optional()
-        .isInt({ min: 0 })
-        .withMessage('Bathrooms must be a non-negative number'),
     body('area')
         .optional()
         .isFloat({ min: 1 })
@@ -514,22 +476,22 @@ const updatePropertyValidation = [
         .optional()
         .isURL()
         .withMessage('microSiteLink must be a valid URL'),
-    
+
     body('sharingType')
         .optional()
         .isArray()
         .withMessage('Sharing type must be an array'),
-    
+
     body('sharingType.*.type')
         .optional()
         .isIn(['single', 'double', 'triple', 'quadruple'])
         .withMessage('Invalid sharing type'),
-    
+
     body('sharingType.*.price')
         .optional()
         .isFloat({ min: 0 })
         .withMessage('Sharing type price must be a positive number'),
-    
+
     body('youtubeLink')
         .optional()
         .isURL()
@@ -571,30 +533,6 @@ const updatePropertyValidation = [
  *           enum: [single, double, triple, quadruple]
  *         description: Filter by sharing type
  *       - in: query
- *         name: minPrice
- *         schema:
- *           type: number
- *           minimum: 0
- *         description: Minimum price filter
- *       - in: query
- *         name: maxPrice
- *         schema:
- *           type: number
- *           minimum: 0
- *         description: Maximum price filter
- *       - in: query
- *         name: bedrooms
- *         schema:
- *           type: integer
- *           minimum: 0
- *         description: Filter by number of bedrooms
- *       - in: query
- *         name: bathrooms
- *         schema:
- *           type: integer
- *           minimum: 0
- *         description: Filter by number of bathrooms
- *       - in: query
  *         name: amenities
  *         schema:
  *           type: string
@@ -609,7 +547,7 @@ const updatePropertyValidation = [
  *         name: sortBy
  *         schema:
  *           type: string
- *           enum: [createdAt, price, views, title]
+ *           enum: [createdAt, views, title]
  *           default: createdAt
  *         description: Sort field
  *       - in: query
@@ -993,11 +931,8 @@ router.get('/:id/similar', param('id').isMongoId().withMessage('Invalid property
  *               - title
  *               - description
  *               - type
- *               - price
  *               - location
  *               - images
- *               - bedrooms
- *               - bathrooms
  *               - area
  *               - youtubeLink
  *             properties:
@@ -1092,14 +1027,6 @@ router.get('/:id/similar', param('id').isMongoId().withMessage('Invalid property
  *                   type: string
  *                 minItems: 1
  *                 example: ["https://example.com/image1.jpg", "https://example.com/image2.jpg"]
- *               bedrooms:
- *                 type: number
- *                 minimum: 0
- *                 example: 2
- *               bathrooms:
- *                 type: number
- *                 minimum: 0
- *                 example: 2
  *               area:
  *                 type: number
  *                 minimum: 1
@@ -1317,14 +1244,6 @@ router.post('/', protect, authorize('admin'), createPropertyValidation, createPr
  *                 items:
  *                   type: string
  *                 example: ["https://example.com/updated-image1.jpg", "https://example.com/updated-image2.jpg"]
- *               bedrooms:
- *                 type: number
- *                 minimum: 0
- *                 example: 3
- *               bathrooms:
- *                 type: number
- *                 minimum: 0
- *                 example: 2
  *               area:
  *                 type: number
  *                 minimum: 1

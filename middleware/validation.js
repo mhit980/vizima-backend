@@ -376,7 +376,7 @@ const validatePagination = [
 
     query('sort')
         .optional()
-        .isIn(['createdAt', '-createdAt', 'price', '-price', 'title', '-title'])
+        .isIn(['createdAt', '-createdAt', 'title', '-title'])
         .withMessage('Invalid sort parameter'),
 
     handleValidationErrors
@@ -723,7 +723,7 @@ module.exports = {
     handleValidationErrors,
 
     isValidDateFormat,
-    
+
     validateFeaturedSearch,
 
     validatePgHostelSearch,

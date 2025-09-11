@@ -15,8 +15,6 @@ const getProperties = async (req, res) => {
             type,
             minPrice,
             maxPrice,
-            bedrooms,
-            bathrooms,
             amenities,
             search,
             sharingType,
@@ -36,15 +34,7 @@ const getProperties = async (req, res) => {
         if (sharingType) {
             query['sharingType.type'] = { $in: sharingType };
         }
-        if (bedrooms) query.bedrooms = parseInt(bedrooms);
-        if (bathrooms) query.bathrooms = parseInt(bathrooms);
 
-        // Price range filter
-        if (minPrice || maxPrice) {
-            query.price = {};
-            if (minPrice) query.price.$gte = parseFloat(minPrice);
-            if (maxPrice) query.price.$lte = parseFloat(maxPrice);
-        }
 
         // Amenities filter
         if (amenities) {
@@ -388,7 +378,6 @@ const getPropertyStats = async (req, res) => {
                     availableProperties: {
                         $sum: { $cond: [{ $eq: ['$isAvailable', true] }, 1, 0] }
                     },
-                    averagePrice: { $avg: '$price' },
                     totalViews: { $sum: '$views' }
                 }
             }
@@ -399,7 +388,6 @@ const getPropertyStats = async (req, res) => {
                 $group: {
                     _id: '$type',
                     count: { $sum: 1 },
-                    averagePrice: { $avg: '$price' }
                 }
             },
             {
@@ -412,7 +400,6 @@ const getPropertyStats = async (req, res) => {
                 $group: {
                     _id: '$location.city',
                     count: { $sum: 1 },
-                    averagePrice: { $avg: '$price' }
                 }
             },
             {
@@ -431,8 +418,7 @@ const getPropertyStats = async (req, res) => {
                     default: '5000000+',
                     output: {
                         count: { $sum: 1 },
-                        averagePrice: { $avg: '$price' }
-                    }
+                        }
                 }
             }
         ]);
@@ -461,12 +447,10 @@ const getPropertyStats = async (req, res) => {
                 overview: stats[0] || {
                     totalProperties: 0,
                     availableProperties: 0,
-                    averagePrice: 0,
                     totalViews: 0
                 },
                 byType: typeStats,
                 byLocation: locationStats,
-                byPriceRange: priceRangeStats,
                 monthlyTrend: monthlyStats
             }
         });
@@ -497,19 +481,13 @@ const getSimilarProperties = async (req, res) => {
 
         const { limit = 4 } = req.query;
 
-        // Find similar properties based on type, location, and price range
+        // Find similar properties based on type and location
         const similarProperties = await Property.find({
             _id: { $ne: property._id },
             isAvailable: true,
             $or: [
                 { type: property.type },
                 { 'location.city': property.location.city },
-                {
-                    price: {
-                        $gte: property.price * 0.8,
-                        $lte: property.price * 1.2
-                    }
-                }
             ]
         })
             .populate('owner', 'name email phone')

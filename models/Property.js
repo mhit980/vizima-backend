@@ -64,11 +64,6 @@ const propertySchema = new mongoose.Schema({
         type: String,
         required: [true, 'Youtube link is required']
     },
-    price: {
-        type: Number,
-        required: [true, 'Property price is required'],
-        min: [0, 'Price cannot be negative']
-    },
     location: {
         address: {
             type: String,
@@ -103,16 +98,6 @@ const propertySchema = new mongoose.Schema({
         type: String,
         required: true
     }],
-    bedrooms: {
-        type: Number,
-        required: [true, 'Number of bedrooms is required'],
-        min: [0, 'Bedrooms cannot be negative']
-    },
-    bathrooms: {
-        type: Number,
-        required: [true, 'Number of bathrooms is required'],
-        min: [0, 'Bathrooms cannot be negative']
-    },
     area: {
         type: Number,
         required: [true, 'Property area is required'],
@@ -189,7 +174,6 @@ const propertySchema = new mongoose.Schema({
 propertySchema.index({ 'location.city': 1 });
 propertySchema.index({ 'location.state': 1 });
 propertySchema.index({ type: 1 });
-propertySchema.index({ price: 1 });
 
 
 // Virtual populate for roomOptions
