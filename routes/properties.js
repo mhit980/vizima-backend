@@ -982,10 +982,6 @@ router.get('/:id/similar', param('id').isMongoId().withMessage('Invalid property
  *                 type: string
  *                 description: YouTube video link for property tour
  *                 example: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
- *               price:
- *                 type: number
- *                 minimum: 0
- *                 example: 25000
  *               location:
  *                 type: object
  *                 required:
@@ -1205,10 +1201,6 @@ router.post('/', protect, authorize('admin'), createPropertyValidation, createPr
  *                 type: string
  *                 description: YouTube video link for property tour
  *                 example: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
- *               price:
- *                 type: number
- *                 minimum: 0
- *                 example: 27000
  *               location:
  *                 type: object
  *                 properties:
