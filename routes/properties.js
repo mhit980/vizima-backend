@@ -950,7 +950,7 @@ router.get('/:id/similar', param('id').isMongoId().withMessage('Invalid property
  *                 example: "apartment"
  *               gender:
  *                 type: string
- *                 enum: [male, female, unisex]
+ *                 enum: [male, female, unisex, transgender, other]
  *                 example: "male"
  *               bulkAccommodation:
  *                 type: boolean
@@ -1169,7 +1169,7 @@ router.post('/', protect, authorize('admin'), createPropertyValidation, createPr
  *                 example: "apartment"
  *               gender:
  *                 type: string
- *                 enum: [male, female, unisex]
+ *                 enum: [male, female, unisex, transgender, other]
  *                 example: "male"
  *               bulkAccommodation:
  *                 type: boolean

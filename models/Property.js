@@ -24,7 +24,7 @@ const propertySchema = new mongoose.Schema({
         type: String,
         required: [true, 'gender is required'],
         enum: {
-            values: ['male', 'female', 'unisex'],
+            values: ['male', 'female', 'unisex', 'transgender', 'other'],
             message: 'Please select a valid gender'
         }
     },

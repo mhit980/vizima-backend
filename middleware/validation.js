@@ -513,8 +513,8 @@ const validatePgHostelSearch = [
 
     query('gender')
         .optional()
-        .isIn(['Male', 'Female', 'Unisex'])
-        .withMessage('Gender must be Male, Female, or Unisex'),
+        .isIn(['Male', 'Female', 'Unisex', 'Transgender', 'Other'])
+        .withMessage('Gender must be Male, Female, Unisex, Transgender, or Other'),
 
     query('page')
         .optional()

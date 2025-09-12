@@ -406,7 +406,7 @@ router.get('/:id', protect, admin, getUserById);
  *                 example: 1995-06-30
  *               gender:
  *                 type: string
- *                 enum: [male, female, unisex]
+ *                 enum: [male, female, unisex, transgender, other]
  *                 example: male
  *               maritalStatus:
  *                 type: string

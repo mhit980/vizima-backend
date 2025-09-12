@@ -24,7 +24,7 @@ const getAllPgHostel = async (req, res) => {
 
         // Filter by gender
         if (gender) {
-            const allowedGenders = ['male', 'female', 'unisex'];
+            const allowedGenders = ['male', 'female', 'unisex', 'transgender', 'other'];
             if (!allowedGenders.includes(gender.toLowerCase())) {
                 return res.status(400).json({
                     success: false,

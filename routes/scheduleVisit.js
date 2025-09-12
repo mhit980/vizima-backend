@@ -22,7 +22,7 @@ const scheduleVisitController = require('../controllers/scheduleVisitController'
  *           example: "60c72b2f5f1b2c001c8d4c3b"
  *         gender:
  *           type: string
- *           enum: [male, female, unisex]
+ *           enum: [male, female, unisex, transgender, other]
  *           example: "male"
  *         sharing:
  *           type: string

@@ -44,7 +44,7 @@ const {
  *               example: "110001"
  *         gender:
  *           type: string
- *           enum: [male, female, unisex]
+ *           enum: [male, female, unisex, transgender, other]
  *           example: "unisex"
  *         amenities:
  *           type: array
@@ -168,7 +168,7 @@ const {
  *         name: gender
  *         schema:
  *           type: string
- *           enum: [male, female, unisex]
+ *           enum: [male, female, unisex, transgender, other]
  *         example: "unisex"
  *     responses:
  *       200:
