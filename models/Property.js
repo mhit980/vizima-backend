@@ -62,7 +62,7 @@ const propertySchema = new mongoose.Schema({
     ],
     youtubeLink: {
         type: String,
-        required: [true, 'Youtube link is required']
+        required: [false, 'Youtube link is required']
     },
     location: {
         address: {

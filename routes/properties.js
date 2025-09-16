@@ -32,7 +32,6 @@ const router = express.Router();
  *         - images
  *         - area
  *         - owner
- *         - youtubeLink
  *       properties:
  *         _id:
  *           type: string
@@ -429,6 +428,7 @@ const createPropertyValidation = [
         .withMessage('Sharing type price must be a positive number'),
 
     body('youtubeLink')
+        .optional()
         .isURL()
         .withMessage('YouTube link must be a valid URL')
 ];
@@ -934,7 +934,6 @@ router.get('/:id/similar', param('id').isMongoId().withMessage('Invalid property
  *               - location
  *               - images
  *               - area
- *               - youtubeLink
  *             properties:
  *               title:
  *                 type: string
