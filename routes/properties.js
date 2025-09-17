@@ -428,9 +428,9 @@ const createPropertyValidation = [
         .withMessage('Sharing type price must be a positive number'),
 
     body('youtubeLink')
-        .optional()
+        .optional({ nullable: true, checkFalsy: true })
         .isURL()
-        .withMessage('YouTube link must be a valid URL')
+        .withMessage('YouTube link must be a valid URL or null')
 ];
 
 const updatePropertyValidation = [
@@ -493,9 +493,9 @@ const updatePropertyValidation = [
         .withMessage('Sharing type price must be a positive number'),
 
     body('youtubeLink')
-        .optional()
+        .optional({ nullable: true, checkFalsy: true })
         .isURL()
-        .withMessage('YouTube link must be a valid URL')
+        .withMessage('YouTube link must be a valid URL or null')
 ];
 
 /**
