@@ -28,13 +28,14 @@ const blogRoutes = require("./routes/blog");
 const userDocumentsRoutes = require("./routes/userDocuments");
 const siteSettingsRoutes = require("./routes/siteSetting");
 const imageRoutes = require("./routes/image");
+const contactNumberRoutes = require("./routes/contactNumbers");
 
 const app = express();
 
 app.set("trust proxy", function (ip) {
-    // Trust all proxies in production, none in development
-    if (process.env.NODE_ENV === "production") return true;
-    return false;
+  // Trust all proxies in production, none in development
+  if (process.env.NODE_ENV === "production") return true;
+  return false;
 });
 
 // Connect to MongoDB
@@ -77,9 +78,9 @@ app.use(
 
 // Rate limiting
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
-    message: "Too many requests from this IP, please try again later.",
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: "Too many requests from this IP, please try again later.",
 });
 app.use(limiter);
 
@@ -111,41 +112,68 @@ app.use("/api/blogs", blogRoutes);
 app.use("/api/user-documents", userDocumentsRoutes);
 app.use("/api/settings", siteSettingsRoutes);
 app.use("/api/images", imageRoutes);
+app.use("/api/contact-numbers", contactNumberRoutes);
 
 
 // Health check endpoint
 app.get("/health", (req, res) => {
-    res.status(200).json({
-        status: "OK",
-        message: "Property Rental API is running",
-        timestamp: new Date().toISOString(),
-    });
+  res.status(200).json({
+    status: "OK",
+    message: "Property Rental API is running",
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // 404 handler
 app.use("*", (req, res) => {
-    res.status(404).json({
-        success: false,
-        message: "Route not found",
-    });
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
+  });
 });
 
 // Global error handler
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(err.status || 500).json({
-        success: false,
-        message: err.message || "Internal Server Error",
-        ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
-    });
+  console.error('Error:', err);
+  
+  // Default values
+  err.statusCode = err.statusCode || 500;
+  err.status = err.status || 'error';
+  
+  // Handle MongoDB CastError (invalid ID format)
+  if (err.name === 'CastError') {
+    err.statusCode = 400;
+    err.message = `Invalid ${err.path}: ${err.value}`;
+  }
+  
+  // Handle MongoDB duplicate field error
+  if (err.code === 11000) {
+    const field = Object.keys(err.keyValue)[0];
+    err.statusCode = 400;
+    err.message = `Duplicate field value: ${field}. Please use another value.`;
+  }
+  
+  // Handle validation errors
+  if (err.name === 'ValidationError') {
+    const errors = Object.values(err.errors).map(el => el.message);
+    err.statusCode = 400;
+    err.message = `Invalid input data: ${errors.join('. ')}`;
+  }
+  
+  // Send error response
+  res.status(err.statusCode).json({
+    status: err.status,
+    message: err.message,
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+  });
 });
 
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-    console.log(` Server is running on port ${PORT}`);
-    console.log(
-        ` API Documentation available at http://localhost:${PORT}/api-docs`
-    );
-    console.log(`Health check available at http://localhost:${PORT}/health`);
+  console.log(` Server is running on port ${PORT}`);
+  console.log(
+    ` API Documentation available at http://localhost:${PORT}/api-docs`
+  );
+  console.log(`Health check available at http://localhost:${PORT}/health`);
 });
