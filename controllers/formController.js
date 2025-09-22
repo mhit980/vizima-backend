@@ -1,4 +1,4 @@
-const Form = require('../models/form');
+const Form = require('../models/Form');
 
 /**
  * @desc    Create a new form submission
