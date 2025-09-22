@@ -159,7 +159,10 @@ const router = express.Router();
  *                 type: number
  *                 minimum: 0
  *                 example: 15000
- *           example: [{"type": "single", "price": 15000}, {"type": "double", "price": 12000}]
+ *               description:
+ *                 type: string
+ *                 example: "Spacious room with attached bathroom"
+ *           example: [{"type": "single", "price": 15000, "description": "Spacious room with attached bathroom"}, {"type": "double", "price": 12000, "description": "Comfortable double sharing room"}]
  *         youtubeLink:
  *           type: string
  *           description: YouTube video link for property tour
@@ -427,6 +430,11 @@ const createPropertyValidation = [
         .isFloat({ min: 0 })
         .withMessage('Sharing type price must be a positive number'),
 
+    body('sharingType.*.description')
+        .optional()
+        .isString()
+        .withMessage('Sharing type description must be a string'),
+
     body('youtubeLink')
         .optional({ nullable: true, checkFalsy: true })
         .isURL()
@@ -491,6 +499,11 @@ const updatePropertyValidation = [
         .optional()
         .isFloat({ min: 0 })
         .withMessage('Sharing type price must be a positive number'),
+
+    body('sharingType.*.description')
+        .optional()
+        .isString()
+        .withMessage('Sharing type description must be a string'),
 
     body('youtubeLink')
         .optional({ nullable: true, checkFalsy: true })
@@ -975,7 +988,10 @@ router.get('/:id/similar', param('id').isMongoId().withMessage('Invalid property
  *                       type: number
  *                       minimum: 0
  *                       example: 15000
- *                 example: [{"type": "single", "price": 15000}, {"type": "double", "price": 12000}]
+ *                     description:
+ *                       type: string
+ *                       example: "Spacious room with attached bathroom"
+ *                 example: [{"type": "single", "price": 15000, "description": "Spacious room with attached bathroom"}, {"type": "double", "price": 12000, "description": "Comfortable double sharing room"}]
  *                 required: false
  *               youtubeLink:
  *                 type: string
@@ -1194,7 +1210,10 @@ router.post('/', protect, authorize('admin'), createPropertyValidation, createPr
  *                       type: number
  *                       minimum: 0
  *                       example: 15000
- *                 example: [{"type": "single", "price": 15000}, {"type": "double", "price": 12000}]
+ *                     description:
+ *                       type: string
+ *                       example: "Spacious room with attached bathroom"
+ *                 example: [{"type": "single", "price": 15000, "description": "Spacious room with attached bathroom"}, {"type": "double", "price": 12000, "description": "Comfortable double sharing room"}]
  *                 required: false
  *               youtubeLink:
  *                 type: string

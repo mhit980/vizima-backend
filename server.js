@@ -29,6 +29,7 @@ const userDocumentsRoutes = require("./routes/userDocuments");
 const siteSettingsRoutes = require("./routes/siteSetting");
 const imageRoutes = require("./routes/image");
 const contactNumberRoutes = require("./routes/contactNumbers");
+const formRoutes = require("./routes/form");
 
 const app = express();
 
@@ -113,6 +114,7 @@ app.use("/api/user-documents", userDocumentsRoutes);
 app.use("/api/settings", siteSettingsRoutes);
 app.use("/api/images", imageRoutes);
 app.use("/api/contact-numbers", contactNumberRoutes);
+app.use("/api/forms", formRoutes);
 
 
 // Health check endpoint
