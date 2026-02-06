@@ -27,25 +27,25 @@ const blogSchema = new mongoose.Schema({
         enum: ['published', 'draft'],
         default: 'draft'
     },
-    views: {
-        type: Number,
-        default: 0
-    },
     publishDate: {
         type: Date,
         required: function () {
             return this.status === 'published';
         }
     },
-    seo: {
-        title: {
-            type: String,
-            required: true
-        },
-        meta: {
-            type: String,
-            required: true
-        }
+    description: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    articleBody: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    blogImageUrl: {
+        type: String,
+        required: true
     }
 }, {
     timestamps: true

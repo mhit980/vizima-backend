@@ -8,7 +8,24 @@ const slugify = require('slugify');
  */
 exports.createBlog = async (req, res) => {
     try {
-        const { title, category, status, seo } = req.body;
+        // Check if user has admin role
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ error: 'Only admin users can create blogs' });
+        }
+
+        const { title, category, status, description, articleBody, blogImageUrl } = req.body;
+
+        // Validate category
+        const validCategories = ['technology', 'lifestyle', 'general'];
+        if (!validCategories.includes(category)) {
+            return res.status(400).json({ error: 'Invalid category. Must be one of: technology, lifestyle, general' });
+        }
+
+        // Validate status
+        const validStatuses = ['published', 'draft'];
+        if (status && !validStatuses.includes(status)) {
+            return res.status(400).json({ error: 'Invalid status. Must be either published or draft' });
+        }
 
         const slug = slugify(title, { lower: true, strict: true });
 
@@ -17,11 +34,13 @@ exports.createBlog = async (req, res) => {
             title,
             slug,
             category,
-            status,
-            seo
+            status: status || 'draft',
+            description,
+            articleBody,
+            blogImageUrl
         });
 
-        if (status === 'published') blog.publishDate = new Date();
+        if (blog.status === 'published') blog.publishDate = new Date();
 
         await blog.save();
         res.status(201).json(blog);
@@ -37,18 +56,73 @@ exports.createBlog = async (req, res) => {
  */
 exports.getAllBlogs = async (req, res) => {
     try {
-        const { page = 1, limit = 10, search = '' } = req.query;
+        const {
+            page = 1,
+            limit = 10,
+            search = '',
+            category,
+            status,
+            startDate,
+            endDate
+        } = req.query;
 
-        const query = {
-            $or: [
+        // Build query object
+        let query = {};
+
+        // If user is not admin, only show published blogs
+        if (req.user && req.user.role !== 'admin') {
+            query.status = 'published';
+        }
+
+        // Search on title and slug only
+        if (search) {
+            query.$or = [
                 { title: { $regex: search, $options: 'i' } },
-                { slug: { $regex: search, $options: 'i' } },
-                { category: { $regex: search, $options: 'i' } },
-                { status: { $regex: search, $options: 'i' } },
-                { 'seo.title': { $regex: search, $options: 'i' } },
-                { 'seo.meta': { $regex: search, $options: 'i' } }
-            ]
-        };
+                { slug: { $regex: search, $options: 'i' } }
+            ];
+        }
+
+        // Category filter
+        if (category) {
+            const validCategories = ['technology', 'lifestyle', 'general'];
+            if (validCategories.includes(category)) {
+                query.category = category;
+            } else {
+                return res.status(400).json({ error: 'Invalid category. Must be one of: technology, lifestyle, general' });
+            }
+        }
+
+        // Status filter - only allowed for admin users
+        if (status) {
+            if (!req.user || req.user.role !== 'admin') {
+                return res.status(403).json({ error: 'Only admin users can filter by status' });
+            }
+            const validStatuses = ['published', 'draft'];
+            if (validStatuses.includes(status)) {
+                query.status = status;
+            } else {
+                return res.status(400).json({ error: 'Invalid status. Must be either published or draft' });
+            }
+        }
+
+        // Date range filter on publishDate
+        if (startDate || endDate) {
+            query.publishDate = {};
+            if (startDate) {
+                const start = new Date(startDate);
+                if (isNaN(start.getTime())) {
+                    return res.status(400).json({ error: 'Invalid startDate format' });
+                }
+                query.publishDate.$gte = start;
+            }
+            if (endDate) {
+                const end = new Date(endDate);
+                if (isNaN(end.getTime())) {
+                    return res.status(400).json({ error: 'Invalid endDate format' });
+                }
+                query.publishDate.$lte = end;
+            }
+        }
 
         const blogs = await Blog.find(query)
             .skip((page - 1) * limit)
@@ -56,8 +130,21 @@ exports.getAllBlogs = async (req, res) => {
             .sort({ createdAt: -1 });
 
         const total = await Blog.countDocuments(query);
+        const totalPages = Math.ceil(total / parseInt(limit));
+        const hasNextPage = page < totalPages;
+        const hasPrevPage = page > 1;
 
-        res.json({ blogs, total });
+        res.json({
+            blogs,
+            pagination: {
+                currentPage: parseInt(page),
+                totalPages,
+                totalBlogs: total,
+                limit: parseInt(limit),
+                hasNextPage,
+                hasPrevPage
+            }
+        });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -85,20 +172,58 @@ exports.getBlogById = async (req, res) => {
  */
 exports.getBlogsByUserId = async (req, res) => {
     try {
-        const { page = 1, limit = 10, search = '' } = req.query;
+        const { page = 1, limit = 10, search = '', category, status, startDate, endDate } = req.query;
         const { userId } = req.params;
 
-        const query = {
-            userId,
-            $or: [
+        // Build query object
+        let query = { userId };
+
+        // Search on title and slug only
+        if (search) {
+            query.$or = [
                 { title: { $regex: search, $options: 'i' } },
-                { slug: { $regex: search, $options: 'i' } },
-                { category: { $regex: search, $options: 'i' } },
-                { status: { $regex: search, $options: 'i' } },
-                { 'seo.title': { $regex: search, $options: 'i' } },
-                { 'seo.meta': { $regex: search, $options: 'i' } }
-            ]
-        };
+                { slug: { $regex: search, $options: 'i' } }
+            ];
+        }
+
+        // Category filter
+        if (category) {
+            const validCategories = ['technology', 'lifestyle', 'general'];
+            if (validCategories.includes(category)) {
+                query.category = category;
+            } else {
+                return res.status(400).json({ error: 'Invalid category. Must be one of: technology, lifestyle, general' });
+            }
+        }
+
+        // Status filter
+        if (status) {
+            const validStatuses = ['published', 'draft'];
+            if (validStatuses.includes(status)) {
+                query.status = status;
+            } else {
+                return res.status(400).json({ error: 'Invalid status. Must be either published or draft' });
+            }
+        }
+
+        // Date range filter on publishDate
+        if (startDate || endDate) {
+            query.publishDate = {};
+            if (startDate) {
+                const start = new Date(startDate);
+                if (isNaN(start.getTime())) {
+                    return res.status(400).json({ error: 'Invalid startDate format' });
+                }
+                query.publishDate.$gte = start;
+            }
+            if (endDate) {
+                const end = new Date(endDate);
+                if (isNaN(end.getTime())) {
+                    return res.status(400).json({ error: 'Invalid endDate format' });
+                }
+                query.publishDate.$lte = end;
+            }
+        }
 
         const blogs = await Blog.find(query)
             .skip((page - 1) * limit)
@@ -106,8 +231,21 @@ exports.getBlogsByUserId = async (req, res) => {
             .sort({ createdAt: -1 });
 
         const total = await Blog.countDocuments(query);
+        const totalPages = Math.ceil(total / parseInt(limit));
+        const hasNextPage = page < totalPages;
+        const hasPrevPage = page > 1;
 
-        res.json({ blogs, total });
+        res.json({
+            blogs,
+            pagination: {
+                currentPage: parseInt(page),
+                totalPages,
+                totalBlogs: total,
+                limit: parseInt(limit),
+                hasNextPage,
+                hasPrevPage
+            }
+        });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -120,15 +258,57 @@ exports.getBlogsByUserId = async (req, res) => {
  */
 exports.currentUserBlogs = async (req, res) => {
     try {
-        const { page = 1, limit = 10, search = '' } = req.query;
+        const { page = 1, limit = 10, search = '', category, status, startDate, endDate } = req.query;
 
-        const query = {
-            userId: req.user._id,
-            $or: [
+        // Build query object
+        let query = { userId: req.user._id };
+
+        // Search on title and slug only
+        if (search) {
+            query.$or = [
                 { title: { $regex: search, $options: 'i' } },
-                { category: { $regex: search, $options: 'i' } }
-            ]
-        };
+                { slug: { $regex: search, $options: 'i' } }
+            ];
+        }
+
+        // Category filter
+        if (category) {
+            const validCategories = ['technology', 'lifestyle', 'general'];
+            if (validCategories.includes(category)) {
+                query.category = category;
+            } else {
+                return res.status(400).json({ error: 'Invalid category. Must be one of: technology, lifestyle, general' });
+            }
+        }
+
+        // Status filter
+        if (status) {
+            const validStatuses = ['published', 'draft'];
+            if (validStatuses.includes(status)) {
+                query.status = status;
+            } else {
+                return res.status(400).json({ error: 'Invalid status. Must be either published or draft' });
+            }
+        }
+
+        // Date range filter on publishDate
+        if (startDate || endDate) {
+            query.publishDate = {};
+            if (startDate) {
+                const start = new Date(startDate);
+                if (isNaN(start.getTime())) {
+                    return res.status(400).json({ error: 'Invalid startDate format' });
+                }
+                query.publishDate.$gte = start;
+            }
+            if (endDate) {
+                const end = new Date(endDate);
+                if (isNaN(end.getTime())) {
+                    return res.status(400).json({ error: 'Invalid endDate format' });
+                }
+                query.publishDate.$lte = end;
+            }
+        }
 
         const total = await Blog.countDocuments(query);
         const blogs = await Blog.find(query)
@@ -136,11 +316,20 @@ exports.currentUserBlogs = async (req, res) => {
             .skip((page - 1) * limit)
             .limit(Number(limit));
 
+        const totalPages = Math.ceil(total / Number(limit));
+        const hasNextPage = page < totalPages;
+        const hasPrevPage = page > 1;
+
         res.json({
-            total,
-            page: Number(page),
-            limit: Number(limit),
-            blogs
+            blogs,
+            pagination: {
+                currentPage: Number(page),
+                totalPages,
+                totalBlogs: total,
+                limit: Number(limit),
+                hasNextPage,
+                hasPrevPage
+            }
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -154,22 +343,43 @@ exports.currentUserBlogs = async (req, res) => {
  */
 exports.updateBlog = async (req, res) => {
     try {
-        const { title, category, status, seo } = req.body;
+        // Check if user has admin role
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ error: 'Only admin users can update blogs' });
+        }
+
+        const { title, category, status, description, articleBody, blogImageUrl } = req.body;
         const blog = await Blog.findById(req.params.id);
 
         if (!blog) return res.status(404).json({ error: 'Blog not found' });
 
-        if (blog.userId.toString() !== req.user._id.toString()) {
-            return res.status(403).json({ error: 'Unauthorized' });
+        // Validate category if provided
+        if (category) {
+            const validCategories = ['technology', 'lifestyle', 'general'];
+            if (!validCategories.includes(category)) {
+                return res.status(400).json({ error: 'Invalid category. Must be one of: technology, lifestyle, general' });
+            }
+        }
+
+        // Validate status if provided
+        if (status) {
+            const validStatuses = ['published', 'draft'];
+            if (!validStatuses.includes(status)) {
+                return res.status(400).json({ error: 'Invalid status. Must be either published or draft' });
+            }
         }
 
         blog.title = title || blog.title;
         blog.slug = title ? slugify(title, { lower: true, strict: true }) : blog.slug;
         blog.category = category || blog.category;
         blog.status = status || blog.status;
-        blog.seo = seo || blog.seo;
+        blog.description = description || blog.description;
+        blog.articleBody = articleBody || blog.articleBody;
+        blog.blogImageUrl = blogImageUrl || blog.blogImageUrl;
 
-        if (status === 'published') blog.publishDate = blog.publishDate || new Date();
+        if (blog.status === 'published' && !blog.publishDate) {
+            blog.publishDate = new Date();
+        }
 
         await blog.save();
         res.json(blog);
@@ -185,13 +395,14 @@ exports.updateBlog = async (req, res) => {
  */
 exports.deleteBlog = async (req, res) => {
     try {
+        // Check if user has admin role
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ error: 'Only admin users can delete blogs' });
+        }
+
         const blog = await Blog.findById(req.params.id);
 
         if (!blog) return res.status(404).json({ error: 'Blog not found' });
-
-        if (blog.userId.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
-            return res.status(403).json({ error: 'Unauthorized' });
-        }
 
         await Blog.findByIdAndDelete(blog.id);
         res.json({ message: 'Blog deleted' });

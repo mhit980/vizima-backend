@@ -30,15 +30,23 @@ const { protect } = require('../middleware/auth');
  *                 type: string
  *               category:
  *                 type: string
+ *                 enum: [technology, lifestyle, general]
  *               status:
  *                 type: string
- *               seo:
- *                 type: object
- *                 properties:
- *                   title:
- *                     type: string
- *                   meta:
- *                     type: string
+ *                 enum: [draft, published]
+ *                 default: draft
+ *               description:
+ *                 type: string
+ *               articleBody:
+ *                 type: string
+ *               blogImageUrl:
+ *                 type: string
+ *             required:
+ *               - title
+ *               - category
+ *               - description
+ *               - articleBody
+ *               - blogImageUrl
  *     responses:
  *       201:
  *         description: Blog created
@@ -70,16 +78,16 @@ router.post('/', protect, blogController.createBlog);
  *                 type: string
  *               category:
  *                 type: string
+ *                 enum: [technology, lifestyle, general]
  *               status:
  *                 type: string
  *                 enum: [draft, published]
- *               seo:
- *                 type: object
- *                 properties:
- *                   title:
- *                     type: string
- *                   meta:
- *                     type: string
+ *               description:
+ *                 type: string
+ *               articleBody:
+ *                 type: string
+ *               blogImageUrl:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Blog updated
@@ -113,7 +121,31 @@ router.put('/:id', protect, blogController.updateBlog);
  *         name: search
  *         schema:
  *           type: string
- *         description: Search by blog title or category
+ *         description: Search by blog title or slug
+ *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *           enum: [technology, lifestyle, general]
+ *         description: Filter by category
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [published, draft]
+ *         description: Filter by status
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Filter blogs from this date (ISO format)
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Filter blogs until this date (ISO format)
  *     responses:
  *       200:
  *         description: Paginated list of current user's blogs
@@ -144,7 +176,7 @@ router.get('/:id', blogController.getBlogById);
  * @swagger
  * /api/blogs:
  *   get:
- *     summary: Get all blogs with pagination and search
+ *     summary: Get all blogs with pagination, search, and filtering
  *     tags: [Blogs]
  *     parameters:
  *       - in: query
@@ -159,6 +191,31 @@ router.get('/:id', blogController.getBlogById);
  *         name: search
  *         schema:
  *           type: string
+ *         description: Search by blog title or slug
+ *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *           enum: [technology, lifestyle, general]
+ *         description: Filter by category
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [published, draft]
+ *         description: Filter by status
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Filter blogs from this date (ISO format)
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Filter blogs until this date (ISO format)
  *     responses:
  *       200:
  *         description: List of blogs
@@ -191,6 +248,31 @@ router.get('/', blogController.getAllBlogs);
  *         name: search
  *         schema:
  *           type: string
+ *         description: Search by blog title or slug
+ *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *           enum: [technology, lifestyle, general]
+ *         description: Filter by category
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [published, draft]
+ *         description: Filter by status
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Filter blogs from this date (ISO format)
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Filter blogs until this date (ISO format)
  *     responses:
  *       200:
  *         description: List of user blogs
